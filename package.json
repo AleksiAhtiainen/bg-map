@@ -1,0 +1,19 @@
+{
+  "name": "bg-map",
+  "version": "1.0.0",
+  "description": "Find board game groups and fellow gamers easily",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "board",
+    "games",
+    "tabletop"
+  ],
+  "author": "Aleksi Ahtiainen <Aleksi.Ahtiainen@iki.fi>",
+  "license": "ISC",
+  "dependencies": {
+    "webpack": "^1.14.0"
+  }
+}
