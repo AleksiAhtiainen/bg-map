@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 
 class AwesomeComponent extends React.Component {
 
@@ -17,7 +18,9 @@ class AwesomeComponent extends React.Component {
         return (
             <div>
                 Likes: <span>{this.state.likesCount}</span>
-                <div><button onClick={this.onLike}>Like Me</button></div>
+                <div>
+                     <Button size='small' color='green' onClick={this.onLike}>Like Me</Button>
+                </div>
             </div>
         );
     }
