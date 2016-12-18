@@ -15,6 +15,10 @@
   ],
   "author": "Aleksi Ahtiainen <Aleksi.Ahtiainen@iki.fi>",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/AleksiA/bg-map.git"
+  },
   "dependencies": {
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
