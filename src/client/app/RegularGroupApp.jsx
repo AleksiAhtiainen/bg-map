@@ -4,6 +4,8 @@ import uuid from 'uuid';
 import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 
+import Map from 'google-maps-react'
+
 class GroupListItem extends React.Component {
 
     constructor(props) {
@@ -69,7 +71,8 @@ class GroupMap extends React.Component {
 
     render() {
         return (
-            <div></div>
+             <Map google={window.google} zoom={14}>
+            </Map>
         );
     }
 }
@@ -92,11 +95,11 @@ class RegularGroupApp extends React.Component {
     render() {
         return (
             <Grid>
-                <Grid.Column key={0}>
+                <Grid.Column mobile={16} tablet={8} computer={8}>
                     <GroupList groups={regularGroups}/>
                 </Grid.Column>
-                <Grid.Column key={1}>
-                    <GroupMap />
+                <Grid.Column mobile={16} tablet={8} computer={8}>
+                    <GroupMap/>
                 </Grid.Column>
             </Grid>
         );
