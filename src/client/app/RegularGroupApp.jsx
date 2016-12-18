@@ -2,7 +2,7 @@ import React from 'react';
 import uuid from 'uuid';
 //import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
-
+import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 
 class GroupListItem extends React.Component {
 
@@ -61,6 +61,19 @@ GroupList.propTypes = {
     groups: React.PropTypes.array.isRequired
 };
 
+class GroupMap extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <div></div>
+        );
+    }
+}
+
 const regularGroups = [
 {
     id: uuid.v4(),
@@ -78,7 +91,14 @@ class RegularGroupApp extends React.Component {
 
     render() {
         return (
-            <GroupList groups={regularGroups}/>
+            <Grid>
+                <Grid.Column key={0}>
+                    <GroupList groups={regularGroups}/>
+                </Grid.Column>
+                <Grid.Column key={1}>
+                    <GroupMap />
+                </Grid.Column>
+            </Grid>
         );
     }
 }
