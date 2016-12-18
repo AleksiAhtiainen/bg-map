@@ -14,6 +14,10 @@ class GroupListItem extends React.Component {
     }
 }
 
+GroupListItem.propTypes = {
+    group: React.PropTypes.object.isRequired
+};
+
 class GroupList extends React.Component {
 
     constructor(props) {
@@ -36,8 +40,11 @@ class GroupList extends React.Component {
             </div>
         );
     }
-
 }
+
+GroupList.propTypes = {
+    groups: React.PropTypes.array.isRequired
+};
 
 const regularGroups = [
 {
