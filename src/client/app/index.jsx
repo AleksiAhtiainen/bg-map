@@ -6,10 +6,7 @@ import RegularGroupApp from './RegularGroupApp.jsx';
 class App extends React.Component {
     render() {
         return (
-            <div>
-               <p>Hello React!</p>
-               <RegularGroupApp />
-            </div>
+           <RegularGroupApp />
         );
     }
 }
