@@ -4,7 +4,7 @@ import uuid from 'uuid';
 import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 
-import Map from 'google-maps-react'
+import {Map,Listing} from 'google-maps-react'
 
 class GroupListItem extends React.Component {
 
@@ -63,15 +63,47 @@ GroupList.propTypes = {
     groups: React.PropTypes.array.isRequired
 };
 
+const juttutupa =
+    {lat: 60.178879, lng: 24.947472};
+
 class GroupMap extends React.Component {
 
     constructor(props) {
         super(props);
     }
 
+    mapIsReady(mapProps, map) {
+        console.log('mapIsReady');
+        // ...
+    }
+
+    mapClicked(mapProps, map, clickEvent) {
+        console.log('mapClicked', clickEvent);
+        // ...
+    }
+
+    centerMoved(mapProps, map) {
+        console.log('centerMoved');
+        // ...
+    }
+
     render() {
+        const style = {
+            width: '100%',
+            height: '100%'
+        }
+
         return (
-             <Map google={window.google} zoom={14}>
+            <Map
+                style={style}
+                google={window.google}
+                zoom={14}
+                initialCenter={juttutupa}
+                onReady={this.mapIsReady}
+                onClick={this.mapClicked}
+                onDragend={this.centerMoved}
+                visible={true}>
+
             </Map>
         );
     }
@@ -92,9 +124,13 @@ class RegularGroupApp extends React.Component {
         super(props);
     }
 
+
     render() {
+        const gridStyle = {
+            height: "100%"
+        }
         return (
-            <Grid>
+            <Grid style={gridStyle}>
                 <Grid.Column mobile={16} tablet={8} computer={8}>
                     <GroupList groups={regularGroups}/>
                 </Grid.Column>
