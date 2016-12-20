@@ -88,14 +88,15 @@ class GroupMap extends React.Component {
     }
 
     render() {
-        const style = {
+        const containerStyle = {
+            position: 'relative',
             width: '100%',
             height: '100%'
         }
 
         return (
             <Map
-                style={style}
+                containerStyle={containerStyle}
                 google={window.google}
                 zoom={14}
                 initialCenter={juttutupa}
