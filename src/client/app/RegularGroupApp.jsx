@@ -4,7 +4,7 @@ import uuid from 'uuid';
 import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 
-import {Map,Listing} from 'google-maps-react'
+import {Map,Listing,Marker} from 'google-maps-react'
 
 class GroupListItem extends React.Component {
 
@@ -16,7 +16,7 @@ class GroupListItem extends React.Component {
         return (
             <Table.Row>
                 <Table.Cell>{this.props.group.name}</Table.Cell>
-                <Table.Cell>{this.props.group.location}</Table.Cell>
+                <Table.Cell>{this.props.group.location.name}</Table.Cell>
                 <Table.Cell>{this.props.group.time}</Table.Cell>
             </Table.Row>
         );
@@ -87,12 +87,24 @@ class GroupMap extends React.Component {
         // ...
     }
 
+    renderGroupMarker(group) {
+        return (
+                <Marker key={group.id}
+                    name={group.location.name}
+                    position={group.location.position}/>
+        );
+    }
+
+
     render() {
         const containerStyle = {
             position: 'relative',
             width: '100%',
             height: '100%'
         }
+
+        const groupMarkers =
+            this.props.groups.map((group) => { return this.renderGroupMarker(group); });
 
         return (
             <Map
@@ -104,17 +116,25 @@ class GroupMap extends React.Component {
                 onClick={this.mapClicked}
                 onDragend={this.centerMoved}
                 visible={true}>
-
+                {groupMarkers}
             </Map>
         );
     }
 }
 
+GroupMap.propTypes = {
+    groups: React.PropTypes.array.isRequired
+};
+
+
 const regularGroups = [
 {
     id: uuid.v4(),
     name: 'Sunnuntaipelaajat',
-    location: 'Juttutupa',
+    location: {
+        name: 'Juttutupa',
+        position: {lat: 60.178879, lng: 24.947472},
+    },
     time: 'Sunnuntaisin klo 13'
 }
 ];
@@ -136,7 +156,7 @@ class RegularGroupApp extends React.Component {
                     <GroupList groups={regularGroups}/>
                 </Grid.Column>
                 <Grid.Column mobile={16} tablet={8} computer={8}>
-                    <GroupMap/>
+                    <GroupMap groups={regularGroups}/>
                 </Grid.Column>
             </Grid>
         );
