@@ -87,11 +87,23 @@ class GroupMap extends React.Component {
         // ...
     }
 
+    mouseoverMarker(props, marker, e) {
+        console.log('mouseoverMarker', props, marker, e);
+    }
+
+    clickMarker(props, marker, e) {
+        console.log('clickMarker', props, marker, e);
+    }
+
     renderGroupMarker(group) {
         return (
                 <Marker key={group.id}
+                    id={group.id}
                     name={group.location.name}
-                    position={group.location.position}/>
+                    position={group.location.position}
+                    onMouseover={this.mouseoverMarker}
+                    onClick={this.clickMarker}
+                    />
         );
     }
 
