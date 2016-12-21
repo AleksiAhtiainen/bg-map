@@ -157,6 +157,9 @@ class RegularGroupApp extends React.Component {
         super(props);
     }
 
+    // TODO: add state for selected group. Pass callback to alter it to both the list and map, and
+    // the value of it also down to both of them. This seems to the react way of handling UI state,
+    // https://facebook.github.io/react/docs/thinking-in-react.html#step-4-identify-where-your-state-should-live
 
     render() {
         const gridStyle = {
