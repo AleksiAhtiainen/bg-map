@@ -7,6 +7,8 @@ import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 
 import {Map,Listing,Marker} from 'google-maps-react'
 
+var groupIconSVGPath = require('./loaders/svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svgx');
+
 class GroupListItem extends React.Component {
 
     constructor(props) {
@@ -15,7 +17,6 @@ class GroupListItem extends React.Component {
 
     onToggle() {
         const newSelectionValue = this.props.selected ? false : true;
-        console.log('GroupListItem.toggle', newSelectionValue);
         this.props.onSelectionToggle(this.props.group.id, newSelectionValue);
     }
 
@@ -79,6 +80,23 @@ GroupList.propTypes = {
 const juttutupa =
     {lat: 60.178879, lng: 24.947472};
 
+class GroupMarker extends Marker {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+
+    }
+}
+
+GroupMarker.propTypes = {
+    group: React.PropTypes.object.isRequired,
+    isSelected: React.PropTypes.bool
+};
+
+
 class GroupMap extends React.Component {
 
     constructor(props) {
@@ -86,40 +104,21 @@ class GroupMap extends React.Component {
     }
 
     mapIsReady(mapProps, map) {
-        console.log('mapIsReady');
-        // ...
     }
 
     mapClicked(mapProps, map, clickEvent) {
-        console.log('mapClicked', clickEvent);
-        // ...
     }
 
     centerMoved(mapProps, map) {
-        console.log('centerMoved');
-        // ...
     }
 
     mouseoverMarker(props, marker, e) {
-        console.log('mouseoverMarker', props, marker, e);
+
     }
 
     clickMarker(props, marker, e) {
-        console.log('clickMarker', props, marker, e);
-    }
 
-    renderGroupMarker(group) {
-        return (
-                <Marker key={group.id}
-                    id={group.id}
-                    name={group.location.name}
-                    position={group.location.position}
-                    onMouseover={this.mouseoverMarker}
-                    onClick={this.clickMarker}
-                    />
-        );
     }
-
 
     render() {
         const containerStyle = {
@@ -128,10 +127,31 @@ class GroupMap extends React.Component {
             height: '100%'
         }
 
-        console.log('Selections', this.props.selections);
         const groupMarkers =
-            this.props.groups.filter((group) => { return this.props.selections[group.id]; }).map((group) =>
-                { return this.renderGroupMarker(group);
+            this.props.groups.map((group) =>
+                {
+                    const fillColor = this.props.selections[group.id] ? 'red' : 'yellow';
+                    const icon =
+                    {
+                        path: groupIconSVGPath,
+                        fillColor: fillColor,
+                        fillOpacity: 1.0,
+                        scale: 1,
+                        strokeColor: 'black',
+                        strokeWeight: 2,
+                        anchor: new google.maps.Point(24,24)
+                    };
+                    return (
+                        <Marker
+                            key={group.id}
+                            id={group.id}
+                            name={group.location.name}
+                            position={group.location.position}
+                            onMouseover={this.mouseoverMarker.bind(this)}
+                            onClick={this.clickMarker.bind(this)}
+                            icon={icon}
+                            />
+                        );
                 });
 
         return (
@@ -185,9 +205,6 @@ class RegularGroupApp extends React.Component {
         var selections = this.state.selections;
 
         selections[id] = selected;
-
-        console.log('RegularGroupApp.onGroupSelectionToggle', id, selections);
-
 
         this.setState({
             selections: selections

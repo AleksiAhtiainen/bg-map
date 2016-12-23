@@ -10,15 +10,28 @@ var config = {
         path: BUILD_DIR,
         filename: 'bundle.js'
     },
+    url: {
+        dataUrlLimit: 1024 // 1kb
+    },
     module: {
         loaders: [
+            // {
+            //      test: /\.svg/,
+            //      loader: 'svg-path-loader'
+            // },
             {
                 test: /\.jsx?/,
-                include: APP_DIR,
-                loader: 'babel'
+                loader: 'babel',
+                include: APP_DIR
             }
         ]
     }
+    // ,
+    // resolveLoader: {
+    //     fallback: [
+    //     path.resolve(__dirname, 'src/client/app/loaders'),
+    //     path.join(process.cwd(), 'node_modules')]
+    // }
 };
 
 module.exports = config;

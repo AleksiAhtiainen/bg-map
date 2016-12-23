@@ -7,7 +7,7 @@
     "webpack-watch": "webpack -d --watch",
     "express-server": "node ./src/server/server",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently --kill-others \"npm run webpack-watch\" \"npm run express-server\"",
+    "dev": "concurrently --kill-others \"npm run webpack-watch --verbose\" \"npm run express-server\"",
     "build": "webpack -p"
   },
   "keywords": [
@@ -28,14 +28,16 @@
     "babel-preset-react": "^6.16.0",
     "babel-register": "^6.18.0",
     "express": "^4.14.0",
-    "google-maps-react": "^1.0.19",
+    "google-maps-react": "https://github.com/AleksiAhtiainen/google-maps-react/tarball/master",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "semantic-ui-react": "^0.62.2",
+    "svg-url-loader": "^1.1.0",
     "uuid": "^3.0.1",
     "webpack": "^1.14.0"
   },
   "devDependencies": {
-    "concurrently": "^3.1.0"
+    "concurrently": "^3.1.0",
+    "xml2js": "^0.4.17"
   }
 }
