@@ -117,7 +117,8 @@ class GroupMap extends React.Component {
     }
 
     clickMarker(props, marker, e) {
-
+        const newSelectionValue = this.props.selections[props.id] ? false : true;
+        this.props.onSelectionToggle(props.id, newSelectionValue);
     }
 
     render() {
