@@ -3,6 +3,7 @@ import uuid from 'uuid';
 //import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 
 import {Map,Listing,Marker} from 'google-maps-react'
 
@@ -12,19 +13,28 @@ class GroupListItem extends React.Component {
         super(props);
     }
 
+    onToggle() {
+        const newSelectionValue = this.props.selected ? false : true;
+        console.log('GroupListItem.toggle', newSelectionValue);
+        this.props.onSelectionToggle(this.props.group.id, newSelectionValue);
+    }
+
     render() {
         return (
             <Table.Row>
                 <Table.Cell>{this.props.group.name}</Table.Cell>
                 <Table.Cell>{this.props.group.location.name}</Table.Cell>
                 <Table.Cell>{this.props.group.time}</Table.Cell>
+                <Table.Cell><Button onClick={this.onToggle.bind(this)}>{this.props.selected ? 'X' : '-'}</Button></Table.Cell>
             </Table.Row>
         );
     }
 }
 
 GroupListItem.propTypes = {
-    group: React.PropTypes.object.isRequired
+    group: React.PropTypes.object.isRequired,
+    onSelectionToggle: React.PropTypes.func.isRequired,
+    selected: React.PropTypes.bool
 };
 
 class GroupList extends React.Component {
@@ -35,7 +45,7 @@ class GroupList extends React.Component {
 
     renderGroup(group) {
         return (
-                <GroupListItem key={group.id} group={group} />
+                <GroupListItem key={group.id} group={group} selected={this.props.selections[group.id]} onSelectionToggle={this.props.onSelectionToggle.bind(this)}/>
         );
     }
 
@@ -48,6 +58,7 @@ class GroupList extends React.Component {
                         <Table.HeaderCell>Ryhmän nimi</Table.HeaderCell>
                         <Table.HeaderCell>Tapaamispaikka</Table.HeaderCell>
                         <Table.HeaderCell>Tapaamisaika</Table.HeaderCell>
+                        <Table.HeaderCell>Valitse</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
 
@@ -60,7 +71,9 @@ class GroupList extends React.Component {
 }
 
 GroupList.propTypes = {
-    groups: React.PropTypes.array.isRequired
+    groups: React.PropTypes.array.isRequired,
+    onSelectionToggle: React.PropTypes.func.isRequired,
+    selections: React.PropTypes.array.isRequired
 };
 
 const juttutupa =
@@ -135,7 +148,9 @@ class GroupMap extends React.Component {
 }
 
 GroupMap.propTypes = {
-    groups: React.PropTypes.array.isRequired
+    groups: React.PropTypes.array.isRequired,
+    onSelectionToggle: React.PropTypes.func.isRequired,
+    selections: React.PropTypes.array.isRequired
 };
 
 
@@ -155,11 +170,26 @@ class RegularGroupApp extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = { selections: []};
     }
 
     // TODO: add state for selected group. Pass callback to alter it to both the list and map, and
     // the value of it also down to both of them. This seems to the react way of handling UI state,
     // https://facebook.github.io/react/docs/thinking-in-react.html#step-4-identify-where-your-state-should-live
+
+    onGroupSelectionToggle(id, selected) {
+        var selections = this.state.selections;
+
+        selections[id] = selected;
+
+        console.log('RegularGroupApp.onGroupSelectionToggle', id, selections);
+
+
+        this.setState({
+            selections: selections
+        });
+    }
 
     render() {
         const gridStyle = {
@@ -168,10 +198,10 @@ class RegularGroupApp extends React.Component {
         return (
             <Grid style={gridStyle}>
                 <Grid.Column mobile={16} tablet={8} computer={8}>
-                    <GroupList groups={regularGroups}/>
+                    <GroupList groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
                 </Grid.Column>
                 <Grid.Column mobile={16} tablet={8} computer={8}>
-                    <GroupMap groups={regularGroups}/>
+                    <GroupMap groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
                 </Grid.Column>
             </Grid>
         );
