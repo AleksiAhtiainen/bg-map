@@ -128,8 +128,11 @@ class GroupMap extends React.Component {
             height: '100%'
         }
 
+        console.log('Selections', this.props.selections);
         const groupMarkers =
-            this.props.groups.map((group) => { return this.renderGroupMarker(group); });
+            this.props.groups.filter((group) => { return this.props.selections[group.id]; }).map((group) =>
+                { return this.renderGroupMarker(group);
+                });
 
         return (
             <Map
