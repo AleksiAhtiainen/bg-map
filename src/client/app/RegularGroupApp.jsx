@@ -7,7 +7,7 @@ import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 
 import {Map,Listing,Marker} from 'google-maps-react'
 
-var groupIconSVGPath = require('./loaders/svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svgx');
+var groupIconSVGPath = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svg');
 
 class GroupListItem extends React.Component {
 

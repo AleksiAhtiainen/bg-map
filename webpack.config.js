@@ -26,12 +26,12 @@ var config = {
             }
         ]
     }
-    // ,
-    // resolveLoader: {
-    //     fallback: [
-    //     path.resolve(__dirname, 'src/client/app/loaders'),
-    //     path.join(process.cwd(), 'node_modules')]
-    // }
+    ,
+    resolveLoader: {
+        fallback: [
+        path.resolve(__dirname, 'src/loaders'),
+        path.join(process.cwd(), 'node_modules')]
+    }
 };
 
 module.exports = config;
