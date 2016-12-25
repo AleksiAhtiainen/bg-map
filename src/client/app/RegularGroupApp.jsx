@@ -5,7 +5,7 @@ import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 
-import {Map,Listing,Marker} from 'google-maps-react'
+import {Map,Listing,Marker,InfoWindow} from 'google-maps-react'
 
 var groupIconSVGPath = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svg');
 
@@ -101,6 +101,9 @@ class GroupMap extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = { activeMarker: undefined, activeMarkerId: undefined, infoWindowVisible: false };
+
     }
 
     mapIsReady(mapProps, map) {
@@ -113,12 +116,37 @@ class GroupMap extends React.Component {
     }
 
     mouseoverMarker(props, marker, e) {
-
+        const newState = {
+            activeMarker: marker,
+            activeMarkerId: props.id,
+            infoWindowVisible: true
+        };
+        console.log('oldState', this.state);
+        console.log('newState', newState);
+        if (this.state.activeMarkerId !== newState.activeMarkerId ||
+            this.state.infoWindowVisible !== newState.infoWindowVisible) {
+            console.log('setState called!');
+            this.setState(newState);
+        }
     }
 
     clickMarker(props, marker, e) {
         const newSelectionValue = this.props.selections[props.id] ? false : true;
         this.props.onSelectionToggle(props.id, newSelectionValue);
+    }
+
+    infoWindowHasOpened(props, infoWindow, e) {
+
+    }
+
+    infoWindowHasClosed(props, infoWindow, e) {
+        const newState = {
+            activeMarker: undefined,
+            activeMarkerId: undefined,
+            infoWindowVisible: false
+        }
+
+        this.setState(newState);
     }
 
     render() {
@@ -155,6 +183,28 @@ class GroupMap extends React.Component {
                         );
                 });
 
+        const infoWindowContent =
+            this.state.activeMarkerId
+            ? this.props.groups.find((group) => { return group.id== this.state.activeMarkerId}).name
+            : 'N/A';
+
+        const infoWindow = (
+            <InfoWindow
+                marker={this.state.activeMarker}
+                visible={this.state.infoWindowVisible}
+                onOpen={this.infoWindowHasOpened.bind(this)}
+                onClose={this.infoWindowHasClosed.bind(this)}>
+
+                    <div>
+                        <h1>
+                        {infoWindowContent}
+                        </h1>
+                    </div>
+            </InfoWindow>
+        );
+
+        console.log('infoWindow', infoWindow);
+
         return (
             <Map
                 containerStyle={containerStyle}
@@ -166,6 +216,8 @@ class GroupMap extends React.Component {
                 onDragend={this.centerMoved}
                 visible={true}>
                 {groupMarkers}
+                {infoWindow}
+
             </Map>
         );
     }
@@ -197,10 +249,6 @@ class RegularGroupApp extends React.Component {
 
         this.state = { selections: []};
     }
-
-    // TODO: add state for selected group. Pass callback to alter it to both the list and map, and
-    // the value of it also down to both of them. This seems to the react way of handling UI state,
-    // https://facebook.github.io/react/docs/thinking-in-react.html#step-4-identify-where-your-state-should-live
 
     onGroupSelectionToggle(id, selected) {
         var selections = this.state.selections;
