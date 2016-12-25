@@ -116,22 +116,23 @@ class GroupMap extends React.Component {
     }
 
     mouseoverMarker(props, marker, e) {
-        const newState = {
-            activeMarker: marker,
-            activeMarkerId: props.id,
-            infoWindowVisible: true
-        };
-        console.log('oldState', this.state);
-        console.log('newState', newState);
-        if (this.state.activeMarkerId !== newState.activeMarkerId ||
-            this.state.infoWindowVisible !== newState.infoWindowVisible) {
-            console.log('setState called!');
-            this.setState(newState);
-        }
     }
 
     clickMarker(props, marker, e) {
         const newSelectionValue = this.props.selections[props.id] ? false : true;
+
+        if (newSelectionValue) {
+            // Enable info window, if not enabled already
+            const newState = {
+                activeMarker: marker,
+                activeMarkerId: props.id,
+                infoWindowVisible: true
+            };
+            if (this.state.activeMarkerId !== newState.activeMarkerId ||
+                this.state.infoWindowVisible !== newState.infoWindowVisible) {
+                this.setState(newState);
+            }
+        }
         this.props.onSelectionToggle(props.id, newSelectionValue);
     }
 
@@ -196,9 +197,9 @@ class GroupMap extends React.Component {
                 onClose={this.infoWindowHasClosed.bind(this)}>
 
                     <div>
-                        <h1>
+                        <h3>
                         {infoWindowContent}
-                        </h1>
+                        </h3>
                     </div>
             </InfoWindow>
         );
@@ -231,15 +232,24 @@ GroupMap.propTypes = {
 
 
 const regularGroups = [
-{
-    id: uuid.v4(),
-    name: 'Sunnuntaipelaajat',
-    location: {
-        name: 'Juttutupa',
-        position: {lat: 60.178879, lng: 24.947472},
+    {
+        id: uuid.v4(),
+        name: 'Sunnuntaipelaajat',
+        location: {
+            name: 'Juttutupa',
+            position: {lat: 60.178879, lng: 24.947472},
+        },
+        time: 'Sunnuntaisin klo 13'
     },
-    time: 'Sunnuntaisin klo 13'
-}
+    {
+        id: uuid.v4(),
+        name: 'Sunnuntaipelaajat2',
+        location: {
+            name: 'Juttutupa2',
+            position: {lat: 60.179879, lng: 24.949472},
+        },
+        time: 'Sunnuntaisin klo 13:30'
+    }
 ];
 
 class RegularGroupApp extends React.Component {
