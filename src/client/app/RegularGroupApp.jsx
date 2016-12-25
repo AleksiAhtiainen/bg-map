@@ -121,18 +121,23 @@ class GroupMap extends React.Component {
     clickMarker(props, marker, e) {
         const newSelectionValue = this.props.selections[props.id] ? false : true;
 
-        if (newSelectionValue) {
-            // Enable info window, if not enabled already
-            const newState = {
+        // Enable/disable info window
+        const newState =
+            newSelectionValue ? {
                 activeMarker: marker,
                 activeMarkerId: props.id,
                 infoWindowVisible: true
+            } : {
+                activeMarker: undefined,
+                activeMarkerId: undefined,
+                infoWindowVisible: false
             };
-            if (this.state.activeMarkerId !== newState.activeMarkerId ||
-                this.state.infoWindowVisible !== newState.infoWindowVisible) {
-                this.setState(newState);
-            }
+
+        if (this.state.activeMarkerId !== newState.activeMarkerId ||
+            this.state.infoWindowVisible !== newState.infoWindowVisible) {
+            this.setState(newState);
         }
+
         this.props.onSelectionToggle(props.id, newSelectionValue);
     }
 
@@ -261,8 +266,8 @@ class RegularGroupApp extends React.Component {
     }
 
     onGroupSelectionToggle(id, selected) {
-        var selections = this.state.selections;
-
+        // Clear all previous selections
+        var selections = [];
         selections[id] = selected;
 
         this.setState({
