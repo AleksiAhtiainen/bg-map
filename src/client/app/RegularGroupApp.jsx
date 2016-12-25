@@ -4,6 +4,7 @@ import uuid from 'uuid';
 import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
+import Card from 'semantic-ui-react/dist/commonjs/views/Card';
 
 import {Map,Listing,Marker,InfoWindow} from 'google-maps-react'
 
@@ -189,10 +190,25 @@ class GroupMap extends React.Component {
                         );
                 });
 
-        const infoWindowContent =
-            this.state.activeMarkerId
-            ? this.props.groups.find((group) => { return group.id== this.state.activeMarkerId}).name
-            : 'N/A';
+        const activeMarkerGroup =
+            this.props.groups.find((group) => { return group.id== this.state.activeMarkerId});
+
+
+        // <div>
+        //     <h3>{activeMarkerGroup.name}</h3>
+        //     <h4>{activeMarkerGroup.location.name}</h4>
+        //     <h4>{activeMarkerGroup.time}</h4>
+        // </div>
+
+        const infoWindowContent = activeMarkerGroup ?
+            <Card>
+              <Card.Content>
+                <Card.Header>{activeMarkerGroup.name}</Card.Header>
+                <Card.Meta>{activeMarkerGroup.location.name}</Card.Meta>
+                <Card.Description>{activeMarkerGroup.time}</Card.Description>
+              </Card.Content>
+            </Card>
+            : <div>'N/A'</div>;
 
         const infoWindow = (
             <InfoWindow
@@ -201,11 +217,7 @@ class GroupMap extends React.Component {
                 onOpen={this.infoWindowHasOpened.bind(this)}
                 onClose={this.infoWindowHasClosed.bind(this)}>
 
-                    <div>
-                        <h3>
-                        {infoWindowContent}
-                        </h3>
-                    </div>
+                {infoWindowContent}
             </InfoWindow>
         );
 
