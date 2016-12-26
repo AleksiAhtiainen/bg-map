@@ -5,10 +5,15 @@ import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 import Card from 'semantic-ui-react/dist/commonjs/views/Card';
+import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
 
 import {Map,Listing,Marker,InfoWindow} from 'google-maps-react'
 
-var groupIconSVGPath = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svg');
+const groupIconSVGPath = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svg');
+
+const menuIconSVG = require('svg-path-loader!material-design-icons/navigation/svg/production/ic_menu_48px.svg');
+
+const menuIcon = 'material-design-icons/navigation/svg/production/ic_menu_24px.svg';
 
 class GroupListItem extends React.Component {
 
@@ -194,12 +199,6 @@ class GroupMap extends React.Component {
             this.props.groups.find((group) => { return group.id== this.state.activeMarkerId});
 
 
-        // <div>
-        //     <h3>{activeMarkerGroup.name}</h3>
-        //     <h4>{activeMarkerGroup.location.name}</h4>
-        //     <h4>{activeMarkerGroup.time}</h4>
-        // </div>
-
         const infoWindowContent = activeMarkerGroup ?
             <Card>
               <Card.Content>
@@ -274,7 +273,7 @@ class RegularGroupApp extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { selections: []};
+        this.state = { selections: [], menuIsOpen: false};
     }
 
     onGroupSelectionToggle(id, selected) {
@@ -287,19 +286,39 @@ class RegularGroupApp extends React.Component {
         });
     }
 
+    handleMenuClick() {
+        this.setState({ menuIsOpen: !this.state.menuIsOpen });
+    }
+
     render() {
         const gridStyle = {
             height: "100%"
         }
+
+        const floatStyle =
+        {
+            position: 'absolute',
+            top: 10,
+            right: 10
+        };
+
+
         return (
-            <Grid style={gridStyle}>
-                <Grid.Column mobile={16} tablet={8} computer={8}>
-                    <GroupList groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
-                </Grid.Column>
-                <Grid.Column mobile={16} tablet={8} computer={8}>
-                    <GroupMap groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
-                </Grid.Column>
-            </Grid>
+            <div>
+                <Grid style={gridStyle}>
+                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                        <GroupList groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
+                    </Grid.Column>
+                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                        <GroupMap groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
+                    </Grid.Column>
+                </Grid>
+                <div style={floatStyle}>
+                    <Button toggle active={this.state.menuIsOpen} onClick={this.handleMenuClick.bind(this)}>
+                        <Image src={menuIcon} />
+                    </Button>
+                </div>
+            </div>
         );
     }
 }
