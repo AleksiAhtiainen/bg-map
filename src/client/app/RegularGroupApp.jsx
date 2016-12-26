@@ -4,8 +4,10 @@ import uuid from 'uuid';
 import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
+import Popup from 'semantic-ui-react/dist/commonjs/modules/Popup';
 import Card from 'semantic-ui-react/dist/commonjs/views/Card';
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
+import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 
 import {Map,Listing,Marker,InfoWindow} from 'google-maps-react'
 
@@ -231,7 +233,12 @@ class GroupMap extends React.Component {
                 onReady={this.mapIsReady}
                 onClick={this.mapClicked}
                 onDragend={this.centerMoved}
-                visible={true}>
+                visible={true}
+                mapTypeControlOptions={{
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.TOP_RIGHT
+                }}
+                >
                 {groupMarkers}
                 {infoWindow}
 
@@ -298,26 +305,68 @@ class RegularGroupApp extends React.Component {
         const floatStyle =
         {
             position: 'absolute',
-            top: 10,
-            right: 10
+            top: 20,
+            left: 10
         };
 
+        const menuButtonIcon = this.state.menuIsOpen ?
+            'angle double left' :
+            'angle double right';
+
+        const menuButtonHoverText = this.state.menuIsOpen ?
+            'sulje valikko' :
+            'avaa valikko';
+
+        const menuButtonPositive = this.state.menuIsOpen;
+        const menuButtonNegative = false; //this.state.menuIsOpen;
+
+        const mapGridWidthMobile = 16;
+        const mapGridWidthTablet = this.state.menuIsOpen ? 8 : 16;
+        const mapGridWidthComputer = this.state.menuIsOpen ? 8 : 16;
+
+        const menuColumn = this.state.menuIsOpen ?
+            (<Grid.Column mobile={16} tablet={8} computer={8}>
+                <GroupList groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
+            </Grid.Column>)
+            : null;
+
+        const zStyle =
+        {
+            zIndex: 100
+        };
+
+                        // <Image src={menuIcon} />
+
+        const buttonObject = this.state.menuIsOpen ?
+            <Button
+                style={floatStyle}
+                icon={menuButtonIcon}
+                positive={menuButtonPositive}
+                negative={menuButtonNegative}
+                compact={true}
+                onClick={this.handleMenuClick.bind(this)}>
+            </Button>
+            : <Button
+                style={floatStyle}
+                label={'menu'}
+                icon={menuButtonIcon}
+                positive={menuButtonPositive}
+                negative={menuButtonNegative}
+                compact={true}
+                onClick={this.handleMenuClick.bind(this)}>
+            </Button>;
 
         return (
             <div>
                 <Grid style={gridStyle}>
-                    <Grid.Column mobile={16} tablet={8} computer={8}>
-                        <GroupList groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
-                    </Grid.Column>
-                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                    {menuColumn}
+                    <Grid.Column mobile={mapGridWidthMobile} tablet={mapGridWidthTablet} computer={mapGridWidthComputer}>
                         <GroupMap groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
+                        {buttonObject}
                     </Grid.Column>
                 </Grid>
-                <div style={floatStyle}>
-                    <Button toggle active={this.state.menuIsOpen} onClick={this.handleMenuClick.bind(this)}>
-                        <Image src={menuIcon} />
-                    </Button>
-                </div>
+                {/*<div style={floatStyle}>*/}
+                {/*</div>*/}
             </div>
         );
     }
