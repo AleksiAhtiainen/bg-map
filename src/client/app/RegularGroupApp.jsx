@@ -128,7 +128,7 @@ class GroupMap extends React.Component {
             var _this = this;
             window.requestAnimationFrame(function() {
                 setTimeout(() => {
-                    console.log('restyling', _this.map);
+                    // console.log('restyling', _this.map);
                     _this.restyleRequired = false;
                     _this.map.restyleMap();
                 }, 0);
@@ -258,7 +258,9 @@ class GroupMap extends React.Component {
             </InfoWindow>
         );
 
-        console.log('infoWindow', infoWindow);
+        // console.log('infoWindow', infoWindow);
+
+        // centerAroundCurrentLocation={true}
 
         return (
             <Map
@@ -266,7 +268,6 @@ class GroupMap extends React.Component {
                 containerStyle={containerStyle}
                 google={window.google}
                 zoom={14}
-                centerAroundCurrentLocation={true}
                 center={this.props.mapCenter}
                 onReady={this.mapIsReady.bind(this)}
                 onClick={this.mapClicked.bind(this)}
