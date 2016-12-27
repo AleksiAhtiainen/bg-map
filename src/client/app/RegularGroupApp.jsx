@@ -111,7 +111,31 @@ class GroupMap extends React.Component {
 
         this.state = { activeMarker: undefined, activeMarkerId: undefined, infoWindowVisible: false, map: null };
 
+        this.restyleRequired = false;
+
     }
+
+    componentDidMountfunction() {
+      this.restyleIfRequired();
+    }
+
+    componentDidUpdate() {
+      this.restyleIfRequired();
+    }
+
+    restyleIfRequired() {
+        if (this.restyleRequired) {
+            var _this = this;
+            window.requestAnimationFrame(function() {
+                setTimeout(() => {
+                    console.log('restyling', _this.map);
+                    _this.restyleRequired = false;
+                    _this.map.restyleMap();
+                }, 0);
+            });
+        }
+    }
+
 
     mapIsReady(mapProps, map) {
         // Store the map reference to be able to call functions like setCenter
@@ -130,14 +154,12 @@ class GroupMap extends React.Component {
     }
 
     restyleMap() {
-        console.log('restyling', this.map);
         // Need to restyle the map when the container's size changes...
-        // ugly timeout to that only after rendering of other elements is complete.
-        // should be done more complex way, see e.g. h
+        // See
         // http://stackoverflow.com/questions/26556436/react-after-render-code
-        setTimeout(() => {
-            this.map.restyleMap();
-        }, 1000);
+        // for why this is implemented in so complex fashion: restyling must happen
+        // only after rendering is actually done.
+        this.restyleRequired = true;
     }
 
     clickMarker(props, marker, e) {
@@ -319,7 +341,7 @@ class RegularGroupApp extends React.Component {
 
     handleMenuClick() {
         this.setState({ menuIsOpen: !this.state.menuIsOpen });
-        // Restyle the map
+        // Restyle the map.
         this.groupMap.restyleMap();
     }
 
