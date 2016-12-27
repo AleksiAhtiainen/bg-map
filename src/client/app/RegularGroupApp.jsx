@@ -13,10 +13,6 @@ import {Map,Listing,Marker,InfoWindow} from 'google-maps-react'
 
 const groupIconSVGPath = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svg');
 
-const menuIconSVG = require('svg-path-loader!material-design-icons/navigation/svg/production/ic_menu_48px.svg');
-
-const menuIcon = 'material-design-icons/navigation/svg/production/ic_menu_24px.svg';
-
 class GroupListItem extends React.Component {
 
     constructor(props) {
@@ -306,27 +302,21 @@ class RegularGroupApp extends React.Component {
         {
             position: 'absolute',
             top: 20,
-            left: 10
+            left: 20
         };
 
-        const menuButtonIcon = this.state.menuIsOpen ?
-            'angle double left' :
-            'angle double right';
-
-        const menuButtonHoverText = this.state.menuIsOpen ?
-            'sulje valikko' :
-            'avaa valikko';
-
-        const menuButtonPositive = this.state.menuIsOpen;
-        const menuButtonNegative = false; //this.state.menuIsOpen;
-
+        // On tablets and computers menu takes half the screen. On mobile, full screen.
         const mapGridWidthMobile = 16;
         const mapGridWidthTablet = this.state.menuIsOpen ? 8 : 16;
         const mapGridWidthComputer = this.state.menuIsOpen ? 8 : 16;
 
         const menuColumn = this.state.menuIsOpen ?
             (<Grid.Column mobile={16} tablet={8} computer={8}>
-                <GroupList groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
+                <GroupList
+                    groups={regularGroups}
+                    selections={this.state.selections}
+                    onSelectionToggle={this.onGroupSelectionToggle.bind(this)}
+                />
             </Grid.Column>)
             : null;
 
@@ -335,23 +325,27 @@ class RegularGroupApp extends React.Component {
             zIndex: 100
         };
 
-                        // <Image src={menuIcon} />
+        // Change button icon/visibility of label based on whether menu is open
+        const menuButtonProps = {
+            style: floatStyle,
+            compact: true,
+            onClick: this.handleMenuClick.bind(this),
+            icon: this.state.menuIsOpen ? 'angle double left' : 'angle double right',
+            label: this.state.menuIsOpen ? null : 'menu'
+        };
 
         const buttonObject = this.state.menuIsOpen ?
             <Button
                 style={floatStyle}
-                icon={menuButtonIcon}
-                positive={menuButtonPositive}
-                negative={menuButtonNegative}
+                icon={'angle double left'}
+                positive={true}
                 compact={true}
                 onClick={this.handleMenuClick.bind(this)}>
             </Button>
             : <Button
                 style={floatStyle}
                 label={'menu'}
-                icon={menuButtonIcon}
-                positive={menuButtonPositive}
-                negative={menuButtonNegative}
+                icon={'angle double right'}
                 compact={true}
                 onClick={this.handleMenuClick.bind(this)}>
             </Button>;
@@ -360,13 +354,18 @@ class RegularGroupApp extends React.Component {
             <div>
                 <Grid style={gridStyle}>
                     {menuColumn}
-                    <Grid.Column mobile={mapGridWidthMobile} tablet={mapGridWidthTablet} computer={mapGridWidthComputer}>
-                        <GroupMap groups={regularGroups} selections={this.state.selections} onSelectionToggle={this.onGroupSelectionToggle.bind(this)}/>
-                        {buttonObject}
+                    <Grid.Column
+                        mobile={mapGridWidthMobile}
+                        tablet={mapGridWidthTablet}
+                        computer={mapGridWidthComputer}>
+                        <GroupMap
+                            groups={regularGroups}
+                            selections={this.state.selections}
+                            onSelectionToggle={this.onGroupSelectionToggle.bind(this)}
+                        />
+                        <Button {...menuButtonProps}/>
                     </Grid.Column>
                 </Grid>
-                {/*<div style={floatStyle}>*/}
-                {/*</div>*/}
             </div>
         );
     }
