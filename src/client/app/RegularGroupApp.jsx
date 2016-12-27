@@ -13,6 +13,11 @@ import {Map,Listing,Marker,InfoWindow} from 'google-maps-react'
 
 const groupIconSVGPath = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svg');
 
+const juttutupa =
+    {lat: 60.178879, lng: 24.947472};
+const juttutupa2 =
+    {lat: 60.178879, lng: 24.950472};
+
 class GroupListItem extends React.Component {
 
     constructor(props) {
@@ -21,7 +26,7 @@ class GroupListItem extends React.Component {
 
     onToggle() {
         const newSelectionValue = this.props.selected ? false : true;
-        this.props.onSelectionToggle(this.props.group.id, newSelectionValue);
+        this.props.onSelectionToggle(this.props.group.id, newSelectionValue, {centerMap: true});
     }
 
     render() {
@@ -81,8 +86,6 @@ GroupList.propTypes = {
     selections: React.PropTypes.array.isRequired
 };
 
-const juttutupa =
-    {lat: 60.178879, lng: 24.947472};
 
 class GroupMarker extends Marker {
 
@@ -106,11 +109,15 @@ class GroupMap extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { activeMarker: undefined, activeMarkerId: undefined, infoWindowVisible: false };
+        this.state = { activeMarker: undefined, activeMarkerId: undefined, infoWindowVisible: false, map: null };
 
     }
 
     mapIsReady(mapProps, map) {
+        // Store the map reference to be able to call functions like setCenter
+        this.state.map = map;
+
+        map.panTo(juttutupa2);
     }
 
     mapClicked(mapProps, map, clickEvent) {
@@ -120,6 +127,17 @@ class GroupMap extends React.Component {
     }
 
     mouseoverMarker(props, marker, e) {
+    }
+
+    restyleMap() {
+        console.log('restyling', this.map);
+        // Need to restyle the map when the container's size changes...
+        // ugly timeout to that only after rendering of other elements is complete.
+        // should be done more complex way, see e.g. h
+        // http://stackoverflow.com/questions/26556436/react-after-render-code
+        setTimeout(() => {
+            this.map.restyleMap();
+        }, 1000);
     }
 
     clickMarker(props, marker, e) {
@@ -222,13 +240,15 @@ class GroupMap extends React.Component {
 
         return (
             <Map
+                ref={(m) => { this.map = m; }}
                 containerStyle={containerStyle}
                 google={window.google}
                 zoom={14}
-                initialCenter={juttutupa}
-                onReady={this.mapIsReady}
-                onClick={this.mapClicked}
-                onDragend={this.centerMoved}
+                centerAroundCurrentLocation={true}
+                center={this.props.mapCenter}
+                onReady={this.mapIsReady.bind(this)}
+                onClick={this.mapClicked.bind(this)}
+                onDragend={this.centerMoved.bind(this)}
                 visible={true}
                 mapTypeControlOptions={{
                     style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
@@ -246,7 +266,8 @@ class GroupMap extends React.Component {
 GroupMap.propTypes = {
     groups: React.PropTypes.array.isRequired,
     onSelectionToggle: React.PropTypes.func.isRequired,
-    selections: React.PropTypes.array.isRequired
+    selections: React.PropTypes.array.isRequired,
+    mapCenter: React.PropTypes.object.isRequired
 };
 
 
@@ -276,10 +297,11 @@ class RegularGroupApp extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { selections: [], menuIsOpen: false};
+
+        this.state = { selections: [], menuIsOpen: false, mapCenter: juttutupa};
     }
 
-    onGroupSelectionToggle(id, selected) {
+    onGroupSelectionToggle(id, selected, options) {
         // Clear all previous selections
         var selections = [];
         selections[id] = selected;
@@ -287,10 +309,18 @@ class RegularGroupApp extends React.Component {
         this.setState({
             selections: selections
         });
+
+        if (options && options.centerMap && selected) {
+            this.setState({
+                mapCenter: regularGroups.find((g) => { return g.id==id;}).location.position
+            })
+        }
     }
 
     handleMenuClick() {
         this.setState({ menuIsOpen: !this.state.menuIsOpen });
+        // Restyle the map
+        this.groupMap.restyleMap();
     }
 
     render() {
@@ -343,6 +373,8 @@ class RegularGroupApp extends React.Component {
                         tablet={mapGridWidthTablet}
                         computer={mapGridWidthComputer}>
                         <GroupMap
+                            ref={(m) => { this.groupMap = m; }}
+                            mapCenter={this.state.mapCenter}
                             groups={regularGroups}
                             selections={this.state.selections}
                             onSelectionToggle={this.onGroupSelectionToggle.bind(this)}
