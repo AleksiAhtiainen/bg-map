@@ -325,7 +325,7 @@ class RegularGroupApp extends React.Component {
             zIndex: 100
         };
 
-        // Change button icon/visibility of label based on whether menu is open
+        // Change button icon and visibility of label based on whether menu is open
         const menuButtonProps = {
             style: floatStyle,
             compact: true,
@@ -333,22 +333,6 @@ class RegularGroupApp extends React.Component {
             icon: this.state.menuIsOpen ? 'angle double left' : 'angle double right',
             label: this.state.menuIsOpen ? null : 'menu'
         };
-
-        const buttonObject = this.state.menuIsOpen ?
-            <Button
-                style={floatStyle}
-                icon={'angle double left'}
-                positive={true}
-                compact={true}
-                onClick={this.handleMenuClick.bind(this)}>
-            </Button>
-            : <Button
-                style={floatStyle}
-                label={'menu'}
-                icon={'angle double right'}
-                compact={true}
-                onClick={this.handleMenuClick.bind(this)}>
-            </Button>;
 
         return (
             <div>
