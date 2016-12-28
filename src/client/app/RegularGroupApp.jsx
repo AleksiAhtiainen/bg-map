@@ -86,36 +86,56 @@ class SideBar extends React.Component {
 
     render() {
 
-        const groupList =
-        (
-            <GroupList
-                groups={this.props.groups}
-                selections={this.props.selections}
-                onSelectionToggle={this.props.onSelectionToggle}
-            />
-            );
+        const sidebarNavData = [
+            {
+                name: 'groups',
+                title: 'ryhmät',
+                iconPath: groupIconSVGPathSmall,
+                content:
+                    <GroupList
+                        groups={this.props.groups}
+                        selections={this.props.selections}
+                        onSelectionToggle={this.props.onSelectionToggle}
+                    />
+            },
+            {
+                name: 'gamers',
+                title: 'pelaajat',
+                iconPath: socialPersonIconSVGPathSmall,
+                content:
+                    <span>TODO</span>
+            },
+            {
+                name: 'stores',
+                title: 'kaupat',
+                iconPath: actionStoreIconSVGPathSmall,
+                content:
+                    <span>TODO</span>
+            }
+        ];
 
         const activeItem = this.state.activeItem;
 
+        const menuItems = sidebarNavData.map((d) => {
+            const svg = <SVGIcon path={d.iconPath}/>;
+            const content = (activeItem == d.name) ?
+                (<div>{svg}{d.title}</div>)
+                : (<div>{svg}</div>);
+            const menuItem =
+                <Menu.Item key={d.name} name={d.name} active={activeItem == d.name} onClick={this.handleItemClick.bind(this)}>
+                    {content}
+                </Menu.Item>
+            return menuItem;
+        });
 
-        const groupsContent = activeItem == 'groups' ? <div><SVGIcon path={groupIconSVGPathSmall}/>ryhmät</div> : <div><SVGIcon path={groupIconSVGPathSmall}/></div>;
-        const gamersContent = activeItem == 'gamers' ? <div><SVGIcon path={socialPersonIconSVGPathSmall}/>pelaajat</div> : <div><SVGIcon path={socialPersonIconSVGPathSmall}/></div>;
-        const storesContent = activeItem == 'stores' ? <div><SVGIcon path={actionStoreIconSVGPathSmall}/>kaupat</div> : <div><SVGIcon path={actionStoreIconSVGPathSmall}/></div>;
+        const activeContent = sidebarNavData.find((d) => { return d.name == activeItem;}).content;
 
         return (
             <Container>
                 <Grid padded><Grid.Row><Grid.Column>
 
                 <Menu attached={'top'} tabular >
-                    <Menu.Item name='groups' active={activeItem == 'groups'} onClick={this.handleItemClick.bind(this)}>
-                        {groupsContent}
-                    </Menu.Item>
-                    <Menu.Item name='gamers' active={activeItem == 'gamers'} onClick={this.handleItemClick.bind(this)}>
-                        {gamersContent}
-                    </Menu.Item>
-                    <Menu.Item name='stores' active={activeItem == 'stores'} onClick={this.handleItemClick.bind(this)}>
-                        {storesContent}
-                    </Menu.Item>
+                    {menuItems}
 
                     <Menu.Menu position={'right'}>
                         <Menu.Item name='close' active={activeItem == 'close'} onClick={this.handleItemClick.bind(this)}>
@@ -125,7 +145,7 @@ class SideBar extends React.Component {
                 </Menu>
 
                 <Segment attached={'bottom'}>
-                    {groupList}
+                    {activeContent}
                 </Segment>
             </Grid.Column></Grid.Row></Grid>
             </Container>
