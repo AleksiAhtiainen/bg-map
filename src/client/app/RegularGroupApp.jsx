@@ -3,7 +3,10 @@ import uuid from 'uuid';
 //import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
+import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
+import Container from 'semantic-ui-react/dist/commonjs/elements/Container';
+import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment';
 import Popup from 'semantic-ui-react/dist/commonjs/modules/Popup';
 import Card from 'semantic-ui-react/dist/commonjs/views/Card';
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
@@ -12,11 +15,131 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 import {Map,Listing,Marker,InfoWindow} from 'google-maps-react'
 
 const groupIconSVGPath = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svg');
+const groupIconSVGPathSmall = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_24px.svg');
+const navigationCloseIconSVGPathSmall = require('svg-path-loader!material-design-icons/navigation/svg/production/ic_close_24px.svg');
+const actionStoreIconSVGPathSmall = require('svg-path-loader!material-design-icons/action/svg/production/ic_store_24px.svg');
+const navigationChevronLeftIconSVGPathSmall = require('svg-path-loader!material-design-icons/navigation/svg/production/ic_chevron_left_24px.svg');
+const navigationChevronRightIconSVGPathSmall = require('svg-path-loader!material-design-icons/navigation/svg/production/ic_chevron_right_24px.svg');
+const socialPersonIconSVGPathSmall = require('svg-path-loader!material-design-icons/social/svg/production/ic_person_24px.svg');
 
 const juttutupa =
     {lat: 60.178879, lng: 24.947472};
 const juttutupa2 =
     {lat: 60.178879, lng: 24.950472};
+
+
+class SVGIcon extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <Image ui>
+            <svg
+                height={this.props.size}
+                viewBox={'0 0 '+this.props.size+' '+this.props.size}
+                width={this.props.size}
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d={this.props.path}
+                    fill={this.props.inverted ? this.props.invertedColor : this.props.color}
+                />
+            </svg>
+            </Image>
+        );
+    }
+}
+
+SVGIcon.defaultProps = {
+    size: 24,
+    color: '#000',
+    invertedColor: '#fff'
+}
+
+SVGIcon.propTypes = {
+    path: React.PropTypes.string.isRequired,
+    inverted: React.PropTypes.bool,
+    size: React.PropTypes.number,
+    color: React.PropTypes.string,
+    invertedColor: React.PropTypes.string
+};
+
+class SideBar extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = { activeItem: 'groups' };
+    }
+
+    handleItemClick(e, item) {
+        if (item.name == 'close')
+        {
+            this.props.onClose();
+        }
+        else
+        {
+            this.setState({activeItem: item.name});
+        }
+    }
+
+    render() {
+
+        const groupList =
+        (
+            <GroupList
+                groups={this.props.groups}
+                selections={this.props.selections}
+                onSelectionToggle={this.props.onSelectionToggle}
+            />
+            );
+
+        const activeItem = this.state.activeItem;
+
+
+        const groupsContent = activeItem == 'groups' ? <div><SVGIcon path={groupIconSVGPathSmall}/>ryhmät</div> : <div><SVGIcon path={groupIconSVGPathSmall}/></div>;
+        const gamersContent = activeItem == 'gamers' ? <div><SVGIcon path={socialPersonIconSVGPathSmall}/>pelaajat</div> : <div><SVGIcon path={socialPersonIconSVGPathSmall}/></div>;
+        const storesContent = activeItem == 'stores' ? <div><SVGIcon path={actionStoreIconSVGPathSmall}/>kaupat</div> : <div><SVGIcon path={actionStoreIconSVGPathSmall}/></div>;
+
+        return (
+            <Container>
+                <Grid padded><Grid.Row><Grid.Column>
+
+                <Menu attached={'top'} tabular >
+                    <Menu.Item name='groups' active={activeItem == 'groups'} onClick={this.handleItemClick.bind(this)}>
+                        {groupsContent}
+                    </Menu.Item>
+                    <Menu.Item name='gamers' active={activeItem == 'gamers'} onClick={this.handleItemClick.bind(this)}>
+                        {gamersContent}
+                    </Menu.Item>
+                    <Menu.Item name='stores' active={activeItem == 'stores'} onClick={this.handleItemClick.bind(this)}>
+                        {storesContent}
+                    </Menu.Item>
+
+                    <Menu.Menu position={'right'}>
+                        <Menu.Item name='close' active={activeItem == 'close'} onClick={this.handleItemClick.bind(this)}>
+                            <SVGIcon path={navigationCloseIconSVGPathSmall}/>
+                        </Menu.Item>
+                    </Menu.Menu>
+                </Menu>
+
+                <Segment attached={'bottom'}>
+                    {groupList}
+                </Segment>
+            </Grid.Column></Grid.Row></Grid>
+            </Container>
+        );
+    }
+}
+
+SideBar.propTypes = {
+    groups: React.PropTypes.array.isRequired,  // -> GroupList
+    onSelectionToggle: React.PropTypes.func.isRequired,  // -> GroupList
+    selections: React.PropTypes.array.isRequired,  // -> GroupList
+    onClose: React.PropTypes.func.isRequired
+};
+
 
 class GroupListItem extends React.Component {
 
@@ -354,7 +477,7 @@ class RegularGroupApp extends React.Component {
         const floatStyle =
         {
             position: 'absolute',
-            top: 20,
+            top: 25,
             left: 20
         };
 
@@ -365,10 +488,11 @@ class RegularGroupApp extends React.Component {
 
         const menuColumn = this.state.menuIsOpen ?
             (<Grid.Column mobile={16} tablet={8} computer={8}>
-                <GroupList
+                <SideBar
                     groups={regularGroups}
                     selections={this.state.selections}
                     onSelectionToggle={this.onGroupSelectionToggle.bind(this)}
+                    onClose={this.handleMenuClick.bind(this)}
                 />
             </Grid.Column>)
             : null;
@@ -381,10 +505,9 @@ class RegularGroupApp extends React.Component {
         // Change button icon and visibility of label based on whether menu is open
         const menuButtonProps = {
             style: floatStyle,
-            compact: true,
             onClick: this.handleMenuClick.bind(this),
-            icon: this.state.menuIsOpen ? 'angle double left' : 'angle double right',
-            label: this.state.menuIsOpen ? null : 'menu'
+            size: 'large',
+            color: 'black',
         };
 
         return (
@@ -402,7 +525,13 @@ class RegularGroupApp extends React.Component {
                             selections={this.state.selections}
                             onSelectionToggle={this.onGroupSelectionToggle.bind(this)}
                         />
-                        <Button {...menuButtonProps}/>
+                        <Button {...menuButtonProps}>
+                            <SVGIcon
+                                path={this.state.menuIsOpen ? navigationChevronLeftIconSVGPathSmall : navigationChevronRightIconSVGPathSmall }
+                                inverted
+                            />
+                            {this.state.menuIsOpen ? null : 'menu'}
+                        </Button>
                     </Grid.Column>
                 </Grid>
             </div>
