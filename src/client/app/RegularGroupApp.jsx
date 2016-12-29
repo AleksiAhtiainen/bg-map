@@ -17,7 +17,7 @@ import Card from 'semantic-ui-react/dist/commonjs/views/Card';
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 
-import {Map,Listing,Marker,InfoWindow} from 'google-maps-react'
+import {Map,Listing,Marker,InfoWindow} from 'google-maps-react';
 
 const groupIconSVGPath = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svg');
 const groupIconSVGPathSmall = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_24px.svg');
@@ -265,6 +265,19 @@ GroupMarker.propTypes = {
     isSelected: React.PropTypes.bool
 };
 
+class InfoWindowDetailsButton extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+
+        // Remove onClick, since it won't work when rendered within InfoWindow anyway
+        const buttonProps = omit(this.props, ['onClick']);
+
+        return <Button {...buttonProps}/>
+    }
+}
 
 class GroupMap extends React.Component {
 
@@ -290,7 +303,6 @@ class GroupMap extends React.Component {
             var _this = this;
             window.requestAnimationFrame(function() {
                 setTimeout(() => {
-                    // console.log('restyling', _this.map);
                     _this.restyleRequired = false;
                     _this.map.restyleMap();
                 }, 0);
@@ -361,6 +373,8 @@ class GroupMap extends React.Component {
         this.setState(newState);
     }
 
+
+
     render() {
         const containerStyle = {
             position: 'relative',
@@ -398,6 +412,25 @@ class GroupMap extends React.Component {
         const activeMarkerGroup =
             this.props.groups.find((group) => { return group.id== this.state.activeMarkerId});
 
+        const linkContent = this.props.sideBarDetailLinksVisible ?
+          <Card.Content extra>
+            <InfoWindowDetailsButton color='black' size='medium' compact>
+                <SVGIcon
+                    path={navigationChevronRightIconSVGPathSmall }
+                    inverted
+                />
+                menu
+            </InfoWindowDetailsButton>
+          </Card.Content>
+          : <Card.Content extra>
+            <InfoWindowDetailsButton color='black' size='medium' compact>
+                <SVGIcon
+                    path={navigationChevronLeftIconSVGPathSmall }
+                    inverted
+                />
+            </InfoWindowDetailsButton>
+          </Card.Content>
+;
 
         const infoWindowContent = activeMarkerGroup ?
             <Card>
@@ -406,23 +439,36 @@ class GroupMap extends React.Component {
                 <Card.Meta>{activeMarkerGroup.location.name}</Card.Meta>
                 <Card.Description>{activeMarkerGroup.time}</Card.Description>
               </Card.Content>
+              {linkContent}
             </Card>
             : <div>'N/A'</div>;
+
+        // TODO: Really ugly way to handle  buttons in the non-DOM-rendered InfoWindow,
+        // via raw JS code calling a globally visible function variable.
+        // Change to react-google-maps component, perhaps it supports this more
+        // directly!
+        var _this = this;
+        handleDetailsClicked = function(id) {
+            if (_this.props.onDetailsRequested)
+            {
+                _this.props.onDetailsRequested(id);
+            }
+        };
 
         const infoWindow = (
             <InfoWindow
                 marker={this.state.activeMarker}
                 visible={this.state.infoWindowVisible}
                 onOpen={this.infoWindowHasOpened.bind(this)}
-                onClose={this.infoWindowHasClosed.bind(this)}>
+                onClose={this.infoWindowHasClosed.bind(this)}
+
+                onButtonClicksRawJS={activeMarkerGroup ? 'handleDetailsClicked(\''+activeMarkerGroup.id+'\')' : null}>
 
                 {infoWindowContent}
+
             </InfoWindow>
         );
 
-        // console.log('infoWindow', infoWindow);
-
-        // centerAroundCurrentLocation={true}
 
         return (
             <Map
@@ -452,7 +498,9 @@ GroupMap.propTypes = {
     groups: React.PropTypes.array.isRequired,
     onSelectionToggle: React.PropTypes.func.isRequired,
     selections: React.PropTypes.array.isRequired,
-    mapCenter: React.PropTypes.object.isRequired
+    mapCenter: React.PropTypes.object.isRequired,
+    sideBarDetailLinksVisible : React.PropTypes.bool,
+    onDetailsRequested: React.PropTypes.func.isRequired
 };
 
 
@@ -547,6 +595,18 @@ class RegularGroupApp extends React.Component {
         this.groupMap.restyleMap();
     }
 
+    handleGroupDetailsRequested(id)
+    {
+        if (!this.state.menuIsOpen)
+        {
+            // Select the item, centering seems to mess with the map for now, so skipped
+            this.onGroupSelectionToggle(id, true);
+        }
+
+        // Open/close the menu
+        this.handleMenuClick();
+    }
+
     render() {
         const gridStyle = {
             height: "100%"
@@ -602,6 +662,8 @@ class RegularGroupApp extends React.Component {
                             groups={regularGroups}
                             selections={this.state.selections}
                             onSelectionToggle={this.onGroupSelectionToggle.bind(this)}
+                            sideBarDetailLinksVisible={!this.state.menuIsOpen}
+                            onDetailsRequested={this.handleGroupDetailsRequested.bind(this)}
                         />
                         <Button {...menuButtonProps}>
                             <SVGIcon
