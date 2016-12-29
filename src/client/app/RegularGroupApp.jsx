@@ -3,7 +3,7 @@ import uuid from 'uuid';
 
 import update from 'react-addons-update';
 
-var _ = require('lodash');
+import {omit} from 'lodash';
 
 //import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 import Table from 'semantic-ui-react/dist/commonjs/collections/Table';
@@ -70,55 +70,28 @@ SVGIcon.propTypes = {
     invertedColor: React.PropTypes.string
 };
 
-// class SideBarMenuItemContent extends React.Component {
-
-//     constructor(props) {
-//         super(props);
-//     }
-
-//     render() {
-//         console.log('SideBarMenuItemContent.props', this.props);
-//         return (
-//             <div><SVGIcon path={this.props.contentPath}/>{this.props.contentActive ? null : this.props.contentName}</div>
-//         );
-
-//     }
-// }
-
-class SideBarMenuItemClass extends React.Component {
+class SideBarMenuItem extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        const newProps = _.omit(this.props, 'path');
-        console.log('SideBarMenuItem.props', newProps);
+        // Omit the path from the props to Menu.Item
+        const menuItemProps = omit(this.props, ['path', 'title']);
         return (
-            <Menu.Item {...newProps}>
+            <Menu.Item {...menuItemProps}>
                 <div>
                     <SVGIcon path={this.props.path}/>
-                    {this.props.active ? this.props.name : null}
+                    {this.props.active ? this.props.title : null}
                 </div>
            </Menu.Item>
         );
     }
 }
 
-function SideBarMenuItem (props) {
-    const newProps = _.omit(props, 'path');
-    console.log('SideBarMenuItem.props', newProps);
-  return (
-    <Menu.Item {...newProps}>
-        <div>
-            <SVGIcon path={props.path}/>
-            {props.active ? props.name : null}
-        </div>
-   </Menu.Item>
-  );
-}
-
 SideBarMenuItem.propTypes = {
-    path: React.PropTypes.string.isRequired
+    path: React.PropTypes.string.isRequired,
+    title: React.PropTypes.string.isRequired
 }
 
 class SideBar extends React.Component {
@@ -142,251 +115,59 @@ class SideBar extends React.Component {
 
     render() {
 
-        // // How to extend Components (of 3rd party libraries) in React?
-
-        // // There is a library component <Menu> that supports children of type <Menu.Item>, specifically I'm prototyping with
-        // // Semantic UI React, http://react.semantic-ui.com/
-
-        // // How do I create a SideBarMenuItem which is a Menu.Item with custom properties and content?
-
-        // // I'd like to write:
-
-        // return (
-        //   <Menu ...>
-        //       <SideBarMenuItem name='groups' title='ryhmät' iconPath={groupIconSVGPathSmall} onClick={...} .../>
-        //       <SideBarMenuItem name='gamers' title='pelaajat' iconPath={socialPersonIconSVGPathSmall} onClick={...} .../>
-        //       ...
-        //   </Menu>
-        // );
-
-        // // so, that from <Menu>'s perspective, its children are really Menu.Items like:
-
-        // return (
-        //   <Menu ...>
-        //       <Menu.Item key='groups' name='groups' active={activeItem=='groups'} onClick={...} .../>
-        //          <div><svg ...><path d={groupIconSVGPathSmall} .../></svg>{'ryhmät'}</div>
-        //       </Menu.Item>
-        //       <Menu.Item key='gamers' name='groups' active={activeItem=='gamers'} onClick={...} .../>
-        //          <div><svg> ...<path d={socialPersonIconSVGPathSmall} .../></svg>{'pelaajat'}</div>
-        //       </Menu.Item>
-        //       ...
-        //   </Menu>
-        // );
-
-        // // This is what I came up with after pondering a while in trying to extend the Menu.Item class without success:
-
-        // const sidebarNavData = [
-        //     {
-        //         name: 'groups',
-        //         title: 'ryhmät',
-        //         iconPath: groupIconSVGPathSmall
-        //     },
-        //     {
-        //         name: 'gamers',
-        //         title: 'pelaajat',
-        //         iconPath: socialPersonIconSVGPathSmall
-        //     },
-        //     ...
-        // ];
-        // const menuItems = sidebarNavData.map((d) => {
-        //     return
-        //         <Menu.Item key={d.name} name={d.name} active={activeItem == d.name} onClick={...} ...>
-        //             <div><svg ...><path d={d.iconPath} .../></svg>{d.title}</div>
-        //         </Menu.Item>;
-        // });
-        // return (
-        //   <Menu ...>
-        //     {menuItems}
-        //   </Menu>
-        // );
-
-
-        // // Using render as
-        // const activeItem = this.state.activeItem;
-
-        // const sidebarNavData = [
-        //     {
-        //         name: 'groups',
-        //         title: 'ryhmät',
-        //         iconPath: groupIconSVGPathSmall,
-        //         content:
-        //             <GroupList
-        //                 groups={this.props.groups}
-        //                 selections={this.props.selections}
-        //                 onSelectionToggle={this.props.onSelectionToggle}
-        //             />
-        //     },
-        //     {
-        //         name: 'gamers',
-        //         title: 'pelaajat',
-        //         iconPath: socialPersonIconSVGPathSmall,
-        //         content:
-        //             <span>TODO</span>
-        //     },
-        //     {
-        //         name: 'stores',
-        //         title: 'kaupat',
-        //         iconPath: actionStoreIconSVGPathSmall,
-        //         content:
-        //             <span>TODO</span>
-        //     }
-        // ];
-
-
-        // const menuItems = sidebarNavData.map((d) => {
-        //     const menuItem =
-        //         <Menu.Item
-        //             key={d.name}
-        //             name={d.name}
-        //             active={activeItem == d.name}
-        //             onClick={this.handleItemClick.bind(this)}
-        //             as={SideBarMenuItemContent}
-        //             contentPath={d.iconPath}
-        //             contentActive={activeItem == d.name}
-        //             contentName={d.name}/>
-        //     return menuItem;
-        // });
-
-        // const activeContent = sidebarNavData.find((d) => { return d.name == activeItem;}).content;
-
-        // // Using items property of <Menu>: Does not support submenu on the right side!
-        // const activeItem = this.state.activeItem;
-
-        // const menuItems = [
-        // {
-        //     key: 'groups',
-        //     name: 'groups',
-        //     active: activeItem == 'groups',
-        //     onClick: this.handleItemClick.bind(this),
-        //     content: (activeItem == 'groups') ? <div><SVGIcon path={groupIconSVGPathSmall}/>ryhmät</div> : <div><SVGIcon path={groupIconSVGPathSmall}/></div>
-        // },
-        // {
-        //     key: 'gamers',
-        //     name: 'gamers',
-        //     active: activeItem == 'gamers',
-        //     onClick: this.handleItemClick.bind(this),
-        //     content: (activeItem == 'gamers') ? <div><SVGIcon path={groupIconSVGPathSmall}/>pelaajat</div> : <div><SVGIcon path={groupIconSVGPathSmall}/></div>
-        // },
-        // {
-        //     key: 'stores',
-        //     name: 'stores',
-        //     active: activeItem == 'stores',
-        //     onClick: this.handleItemClick.bind(this),
-        //     content: (activeItem == 'stores') ? <div><SVGIcon path={groupIconSVGPathSmall}/>kaupat</div> : <div><SVGIcon path={groupIconSVGPathSmall}/></div>
-        // }
-        // ];
-
-        // const contentItems = {
-        //     'groups': <GroupList
-        //                 groups={this.props.groups}
-        //                 selections={this.props.selections}
-        //                 onSelectionToggle={this.props.onSelectionToggle}
-        //             />,
-        //     'gamers': <span>TODO</span>,
-        //     'stores': <span>TODO</span>
-        // }
-        // const activeContent = contentItems[activeItem];
-
-
-        // function type property
         const activeItem = this.state.activeItem;
 
-        const sidebarNavData = [
-            {
-                name: 'groups',
-                title: 'ryhmät',
-                iconPath: groupIconSVGPathSmall,
-                content:
-                    <GroupList
-                        groups={this.props.groups}
-                        selections={this.props.selections}
-                        onSelectionToggle={this.props.onSelectionToggle}
-                    />
-            },
-            {
-                name: 'gamers',
-                title: 'pelaajat',
-                iconPath: socialPersonIconSVGPathSmall,
-                content:
-                    <span>TODO</span>
-            },
-            {
-                name: 'stores',
-                title: 'kaupat',
-                iconPath: actionStoreIconSVGPathSmall,
-                content:
-                    <span>TODO</span>
-            }
+        const sideBarMenuItems = [
+            <SideBarMenuItem
+                path={groupIconSVGPathSmall}
+                key={'groups'}
+                name={'groups'}
+                title={'ryhmät'}
+                active={activeItem == 'groups'}
+                onClick={this.handleItemClick.bind(this)} />,
+            <SideBarMenuItem
+                path={socialPersonIconSVGPathSmall}
+                key={'gamers'}
+                name={'gamers'}
+                title={'pelaajat'}
+                active={activeItem == 'gamers'}
+                onClick={this.handleItemClick.bind(this)} />,
+            <SideBarMenuItem
+                path={actionStoreIconSVGPathSmall}
+                key={'stores'}
+                name={'stores'}
+                title={'kaupat'}
+                active={activeItem == 'stores'}
+                onClick={this.handleItemClick.bind(this)} />
         ];
 
-
-        const menuItems = sidebarNavData.map((d) => { return <SideBarMenuItemClass path={d.iconPath} key={d.name} name={d.name} active={activeItem == d.name} onClick={this.handleItemClick.bind(this)} />; });
-
-        const activeContent = sidebarNavData.find((d) => { return d.name == activeItem;}).content;
-
-        // // map through custom data, this works but is ugly:
-
-        // const sidebarNavData = [
-        //     {
-        //         name: 'groups',
-        //         title: 'ryhmät',
-        //         iconPath: groupIconSVGPathSmall,
-        //         content:
-        //             <GroupList
-        //                 groups={this.props.groups}
-        //                 selections={this.props.selections}
-        //                 onSelectionToggle={this.props.onSelectionToggle}
-        //             />
-        //     },
-        //     {
-        //         name: 'gamers',
-        //         title: 'pelaajat',
-        //         iconPath: socialPersonIconSVGPathSmall,
-        //         content:
-        //             <span>TODO</span>
-        //     },
-        //     {
-        //         name: 'stores',
-        //         title: 'kaupat',
-        //         iconPath: actionStoreIconSVGPathSmall,
-        //         content:
-        //             <span>TODO</span>
-        //     }
-        // ];
-
-
-        // const menuItems = sidebarNavData.map((d) => {
-        //     const svg = <SVGIcon path={d.iconPath}/>;
-        //     const content = (activeItem == d.name) ?
-        //         (<div>{svg}{d.title}</div>)
-        //         : (<div>{svg}</div>);
-        //     const menuItem =
-        //         <Menu.Item key={d.name} name={d.name} active={activeItem == d.name} onClick={this.handleItemClick.bind(this)}>
-        //             {content}
-        //         </Menu.Item>
-        //     return menuItem;
-        // });
-
-        // const activeContent = sidebarNavData.find((d) => { return d.name == activeItem;}).content;
+        const sideBarContent = activeItem == 'groups' ?
+            <GroupList
+                groups={this.props.groups}
+                selections={this.props.selections}
+                onSelectionToggle={this.props.onSelectionToggle}
+            />
+            : <span>todo</span>
 
         return (
             <Container>
                 <Grid padded><Grid.Row><Grid.Column>
 
                 <Menu attached={'top'} tabular>
-                    {menuItems}
-                    {/*
+
+                    {sideBarMenuItems}
+
                     <Menu.Menu position={'right'}>
                         <Menu.Item name='close' active={activeItem == 'close'} onClick={this.handleItemClick.bind(this)}>
                             <SVGIcon path={navigationCloseIconSVGPathSmall}/>
                         </Menu.Item>
                     </Menu.Menu>
-                    */}
                 </Menu>
 
                 <Segment attached={'bottom'}>
-                    {activeContent}
+                    {sideBarContent}
                 </Segment>
+
             </Grid.Column></Grid.Row></Grid>
             </Container>
         );
@@ -399,7 +180,6 @@ SideBar.propTypes = {
     selections: React.PropTypes.array.isRequired,  // -> GroupList
     onClose: React.PropTypes.func.isRequired
 };
-
 
 class GroupListItem extends React.Component {
 
