@@ -14,10 +14,13 @@ import Container from 'semantic-ui-react/dist/commonjs/elements/Container';
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment';
 import Popup from 'semantic-ui-react/dist/commonjs/modules/Popup';
 import Card from 'semantic-ui-react/dist/commonjs/views/Card';
+import Item from 'semantic-ui-react/dist/commonjs/views/Item';
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image';
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 
 import {Map,Listing,Marker,InfoWindow} from 'google-maps-react';
+
+const groupIconSVG = '/material-design-icons/social/svg/production/ic_group_48px.svg';
 
 const groupIconSVGPath = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_48px.svg');
 const groupIconSVGPathSmall = require('svg-path-loader!material-design-icons/social/svg/production/ic_group_24px.svg');
@@ -141,7 +144,7 @@ class SideBar extends React.Component {
         ];
 
         const sideBarContent = activeItem == 'groups' ?
-            <GroupList
+            <GroupItems
                 groups={this.props.groups}
                 selections={this.props.selections}
                 onSelectionToggle={this.props.onSelectionToggle}
@@ -174,13 +177,179 @@ class SideBar extends React.Component {
 }
 
 SideBar.propTypes = {
-    groups: React.PropTypes.array.isRequired,  // -> GroupList
-    onSelectionToggle: React.PropTypes.func.isRequired,  // -> GroupList
-    selections: React.PropTypes.array.isRequired,  // -> GroupList
+    groups: React.PropTypes.array.isRequired,  // -> GroupTable
+    onSelectionToggle: React.PropTypes.func.isRequired,  // -> GroupTable
+    selections: React.PropTypes.array.isRequired,  // -> GroupTable
     onClose: React.PropTypes.func.isRequired
 };
 
-class GroupListItem extends React.Component {
+// class GroupTableItem extends React.Component {
+
+//     constructor(props) {
+//         super(props);
+//     }
+
+//     onToggle() {
+//         const newSelectionValue = this.props.selected ? false : true;
+//         this.props.onSelectionToggle(this.props.group.id, newSelectionValue);
+//     }
+
+//     render() {
+//         return (
+//             <Table.Row>
+//                 <Table.Cell>{this.props.group.name}</Table.Cell>
+//                 <Table.Cell>{this.props.group.location.name}</Table.Cell>
+//                 <Table.Cell>{this.props.group.time}</Table.Cell>
+//                 <Table.Cell><Button onClick={this.onToggle.bind(this)}>{this.props.selected ? 'X' : '-'}</Button></Table.Cell>
+//             </Table.Row>
+//         );
+//     }
+// }
+
+// GroupTableItem.propTypes = {
+//     group: React.PropTypes.object.isRequired,
+//     onSelectionToggle: React.PropTypes.func.isRequired,
+//     selected: React.PropTypes.bool
+// };
+
+// class GroupTable extends React.Component {
+
+//     constructor(props) {
+//         super(props);
+//     }
+
+//     renderGroup(group) {
+//         return (
+//                 <GroupTableItem key={group.id} group={group} selected={this.props.selections[group.id]} onSelectionToggle={this.props.onSelectionToggle.bind(this)}/>
+//         );
+//     }
+
+//     render() {
+//         const groups = this.props.groups.map((group) => { return this.renderGroup(group); });
+//         return (
+//             <Table celled>
+//                 <Table.Header>
+//                     <Table.Row>
+//                         <Table.HeaderCell>Ryhmän nimi</Table.HeaderCell>
+//                         <Table.HeaderCell>Tapaamispaikka</Table.HeaderCell>
+//                         <Table.HeaderCell>Tapaamisaika</Table.HeaderCell>
+//                         <Table.HeaderCell>Valitse</Table.HeaderCell>
+//                     </Table.Row>
+//                 </Table.Header>
+
+//                 <Table.Body>
+//                    {groups}
+//                 </Table.Body>
+//             </Table>
+//         );
+//     }
+// }
+
+// GroupTable.propTypes = {
+//     groups: React.PropTypes.array.isRequired,
+//     onSelectionToggle: React.PropTypes.func.isRequired,
+//     selections: React.PropTypes.array.isRequired
+// };
+
+// class GroupCard extends React.Component {
+
+//     constructor(props) {
+//         super(props);
+//     }
+
+//     onToggle() {
+//         const newSelectionValue = this.props.selected ? false : true;
+//         this.props.onSelectionToggle(this.props.group.id, newSelectionValue);
+//     }
+
+
+//     // {
+//     //     id: uuid.v4(),
+//     //     name: 'K-BGC',
+//     //     location: {
+//     //         name: 'KG restaurant, Scandic Espoo',
+//     //         streetAddress: 'Nihtisillantie 1',
+//     //         district: 'Kilo',
+//     //         city: 'Espoo',
+//     //         position: {lat: 60.207001, lng: 24.755170}
+//     //     },
+//     //     time: 'tiistai, yleensä 17:00',
+//     //     forumUrl: 'http://www.lautapeliseura.fi/foorumi/viewforum.php?f=46'
+//     // },
+
+//     render() {
+//         const group = this.props.group;
+
+//         return (
+
+//             <Card key={group.id} fluid color={this.props.selected ? 'black' : 'grey'}>
+//                 <Card.Content header={group.name}/>
+
+//                 <Card.Content>
+//                     {group.location.name + ', ' + group.location.district + ', ' + group.location.city}
+//                     <br/>{group.time}
+//                 </Card.Content>
+
+//                 <Card.Content>
+//                     keskustelu: <a href={group.forumUrl}>{truncate(group.forumUrl, 15)}</a>
+//                     <br/>kotisivut: <a href={group.homepageUrl}>{truncate(group.homepageUrl,15)}</a>
+//                 </Card.Content>
+
+//                 <Card.Content extra>
+//                     {group.location.streetAddress}
+//                     <br/>lat: {group.location.position.lat}, lng: {group.location.position.lng}
+//                 </Card.Content>
+
+//                 <Button onClick={this.onToggle.bind(this)}>{this.props.selected ? 'X' : '-'}</Button>
+
+//             </Card>
+//         );
+//     }
+// }
+
+// GroupCard.propTypes = {
+//     group: React.PropTypes.object.isRequired,
+//     onSelectionToggle: React.PropTypes.func.isRequired,
+//     selected: React.PropTypes.bool
+// };
+
+// class GroupCards extends React.Component {
+
+//     constructor(props) {
+//         super(props);
+//     }
+
+//     renderGroup(group) {
+//         return (
+//                 <GroupCard key={group.id} group={group} selected={this.props.selections[group.id]} onSelectionToggle={this.props.onSelectionToggle.bind(this)}/>
+//         );
+//     }
+
+//     render() {
+//         const groups = this.props.groups.map((group) => { return this.renderGroup(group); });
+//         return (
+//             <Card.Group>
+//                 {groups}
+//             </Card.Group>
+//         );
+//     }
+// }
+
+// GroupCards.propTypes = {
+//     groups: React.PropTypes.array.isRequired,
+//     onSelectionToggle: React.PropTypes.func.isRequired,
+//     selections: React.PropTypes.array.isRequired
+// };
+
+
+function truncate(s, n) {
+    if (s) {
+        return (s.length > n) ? s.substr(0, n-1)+'...' : s;
+    }
+    return s;
+}
+
+class GroupItem extends React.Component {
 
     constructor(props) {
         super(props);
@@ -192,24 +361,49 @@ class GroupListItem extends React.Component {
     }
 
     render() {
+        const group = this.props.group;
+
         return (
-            <Table.Row>
-                <Table.Cell>{this.props.group.name}</Table.Cell>
-                <Table.Cell>{this.props.group.location.name}</Table.Cell>
-                <Table.Cell>{this.props.group.time}</Table.Cell>
-                <Table.Cell><Button onClick={this.onToggle.bind(this)}>{this.props.selected ? 'X' : '-'}</Button></Table.Cell>
-            </Table.Row>
+
+            <Item key={group.id}>
+                <Item.Image size='tiny' src={groupIconSVG} />
+
+                <Item.Content>
+                    <Item.Header>
+                        {group.name}
+                    </Item.Header>
+
+                    <Item.Meta>
+                        {group.location.name + ', ' + group.location.district + ', ' + group.location.city}
+                        <br/>{group.time}
+                    </Item.Meta>
+
+                    <Item.Description>
+                        foorumi: <a href={group.forumUrl}>{truncate(group.forumUrl, 25)}</a>
+                        <br/>kotisivu: <a href={group.homepageUrl}>{truncate(group.homepageUrl, 25)}</a>
+                    </Item.Description>
+
+                    <Item.Extra>
+                        <Button floated='right' onClick={this.onToggle.bind(this)}>{this.props.selected ? 'X' : '-'}</Button>
+
+                        {group.location.streetAddress}
+                        <br/>lat: {group.location.position.lat}, lng: {group.location.position.lng}
+                    </Item.Extra>
+
+                </Item.Content>
+
+            </Item>
         );
     }
 }
 
-GroupListItem.propTypes = {
+GroupItem.propTypes = {
     group: React.PropTypes.object.isRequired,
     onSelectionToggle: React.PropTypes.func.isRequired,
     selected: React.PropTypes.bool
 };
 
-class GroupList extends React.Component {
+class GroupItems extends React.Component {
 
     constructor(props) {
         super(props);
@@ -217,32 +411,21 @@ class GroupList extends React.Component {
 
     renderGroup(group) {
         return (
-                <GroupListItem key={group.id} group={group} selected={this.props.selections[group.id]} onSelectionToggle={this.props.onSelectionToggle.bind(this)}/>
+                <GroupItem key={group.id} group={group} selected={this.props.selections[group.id]} onSelectionToggle={this.props.onSelectionToggle.bind(this)}/>
         );
     }
 
     render() {
         const groups = this.props.groups.map((group) => { return this.renderGroup(group); });
         return (
-            <Table celled>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell>Ryhmän nimi</Table.HeaderCell>
-                        <Table.HeaderCell>Tapaamispaikka</Table.HeaderCell>
-                        <Table.HeaderCell>Tapaamisaika</Table.HeaderCell>
-                        <Table.HeaderCell>Valitse</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-
-                <Table.Body>
-                   {groups}
-                </Table.Body>
-            </Table>
+            <Item.Group>
+                {groups}
+            </Item.Group>
         );
     }
 }
 
-GroupList.propTypes = {
+GroupItems.propTypes = {
     groups: React.PropTypes.array.isRequired,
     onSelectionToggle: React.PropTypes.func.isRequired,
     selections: React.PropTypes.array.isRequired
