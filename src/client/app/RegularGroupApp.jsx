@@ -649,7 +649,6 @@ class RegularGroupApp extends React.Component {
         };
 
         return (
-            <div>
                 <Grid style={gridStyle}>
                     {menuColumn}
                     <Grid.Column
@@ -674,7 +673,6 @@ class RegularGroupApp extends React.Component {
                         </Button>
                     </Grid.Column>
                 </Grid>
-            </div>
         );
     }
 }
