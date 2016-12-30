@@ -230,6 +230,7 @@ class GroupItem extends React.Component {
         return (
 
             <Item key={group.id}>
+            {/*}
                 <Item.Image size='tiny'>
                         <Button basic
                             onClick={this.onToggle.bind(this)}>
@@ -241,19 +242,36 @@ class GroupItem extends React.Component {
                             </Image>
                         </Button>
                 </Item.Image>
+            */}
 
                 <Item.Content>
                     <Item.Header>
                         {group.name}
+                    {/*}
+                        <Button basic
+                            onClick={this.onToggle.bind(this)}>
+                            <Image>
+                                <SVGIcon
+                                    color={this.props.selected ? uiColors.red : uiColors.yellow}
+                                    path={groupIconSVGPathSmall}
+                                    size={24}/>
+                            </Image>
+                        </Button>
+                    */}
+
                     </Item.Header>
 
                     <Item.Meta>
-                        <Button
+                        <Button basic
                             floated='right'
                             size='small'
-                            color={this.props.selected ? 'red' : 'yellow'}
-                            onClick={this.onToggle.bind(this)}
-                            icon='zoom'>
+                            onClick={this.onToggle.bind(this)}>
+                                <Image>
+                                    <SVGIcon
+                                        color={this.props.selected ? uiColors.red : uiColors.yellow}
+                                        path={groupIconSVGPathSmall}
+                                        size={24}/>
+                                </Image>
                         </Button>
                         {group.location.name}
                         <br/>{group.location.district + ', ' + group.location.city}
