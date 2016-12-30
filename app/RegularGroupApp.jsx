@@ -35,6 +35,23 @@ const startingPosition =
 const startingZoom =
     6;
 
+// TODO: get these directly from Semantic UI CSS, if possible. Used for coloring items on the map.
+const uiColors = {
+    red            : '#B03060',
+    orange         : '#FE9A76',
+    yellow         : '#FFD700',
+    olive          : '#32CD32',
+    green          : '#016936',
+    teal           : '#008080',
+    blue           : '#0E6EB8',
+    violet         : '#EE82EE',
+    purple         : '#B413EC',
+    pink           : '#FF1493',
+    brown          : '#A52A2A',
+    grey           : '#A0A0A0',
+    black          : '#000000'
+};
+
 class SVGIcon extends React.Component {
     constructor(props) {
         super(props);
@@ -183,165 +200,6 @@ SideBar.propTypes = {
     onClose: React.PropTypes.func.isRequired
 };
 
-// class GroupTableItem extends React.Component {
-
-//     constructor(props) {
-//         super(props);
-//     }
-
-//     onToggle() {
-//         const newSelectionValue = this.props.selected ? false : true;
-//         this.props.onSelectionToggle(this.props.group.id, newSelectionValue);
-//     }
-
-//     render() {
-//         return (
-//             <Table.Row>
-//                 <Table.Cell>{this.props.group.name}</Table.Cell>
-//                 <Table.Cell>{this.props.group.location.name}</Table.Cell>
-//                 <Table.Cell>{this.props.group.time}</Table.Cell>
-//                 <Table.Cell><Button onClick={this.onToggle.bind(this)}>{this.props.selected ? 'X' : '-'}</Button></Table.Cell>
-//             </Table.Row>
-//         );
-//     }
-// }
-
-// GroupTableItem.propTypes = {
-//     group: React.PropTypes.object.isRequired,
-//     onSelectionToggle: React.PropTypes.func.isRequired,
-//     selected: React.PropTypes.bool
-// };
-
-// class GroupTable extends React.Component {
-
-//     constructor(props) {
-//         super(props);
-//     }
-
-//     renderGroup(group) {
-//         return (
-//                 <GroupTableItem key={group.id} group={group} selected={this.props.selections[group.id]} onSelectionToggle={this.props.onSelectionToggle.bind(this)}/>
-//         );
-//     }
-
-//     render() {
-//         const groups = this.props.groups.map((group) => { return this.renderGroup(group); });
-//         return (
-//             <Table celled>
-//                 <Table.Header>
-//                     <Table.Row>
-//                         <Table.HeaderCell>Ryhmän nimi</Table.HeaderCell>
-//                         <Table.HeaderCell>Tapaamispaikka</Table.HeaderCell>
-//                         <Table.HeaderCell>Tapaamisaika</Table.HeaderCell>
-//                         <Table.HeaderCell>Valitse</Table.HeaderCell>
-//                     </Table.Row>
-//                 </Table.Header>
-
-//                 <Table.Body>
-//                    {groups}
-//                 </Table.Body>
-//             </Table>
-//         );
-//     }
-// }
-
-// GroupTable.propTypes = {
-//     groups: React.PropTypes.array.isRequired,
-//     onSelectionToggle: React.PropTypes.func.isRequired,
-//     selections: React.PropTypes.array.isRequired
-// };
-
-// class GroupCard extends React.Component {
-
-//     constructor(props) {
-//         super(props);
-//     }
-
-//     onToggle() {
-//         const newSelectionValue = this.props.selected ? false : true;
-//         this.props.onSelectionToggle(this.props.group.id, newSelectionValue);
-//     }
-
-
-//     // {
-//     //     id: uuid.v4(),
-//     //     name: 'K-BGC',
-//     //     location: {
-//     //         name: 'KG restaurant, Scandic Espoo',
-//     //         streetAddress: 'Nihtisillantie 1',
-//     //         district: 'Kilo',
-//     //         city: 'Espoo',
-//     //         position: {lat: 60.207001, lng: 24.755170}
-//     //     },
-//     //     time: 'tiistai, yleensä 17:00',
-//     //     forumUrl: 'http://www.lautapeliseura.fi/foorumi/viewforum.php?f=46'
-//     // },
-
-//     render() {
-//         const group = this.props.group;
-
-//         return (
-
-//             <Card key={group.id} fluid color={this.props.selected ? 'black' : 'grey'}>
-//                 <Card.Content header={group.name}/>
-
-//                 <Card.Content>
-//                     {group.location.name + ', ' + group.location.district + ', ' + group.location.city}
-//                     <br/>{group.time}
-//                 </Card.Content>
-
-//                 <Card.Content>
-//                     keskustelu: <a href={group.forumUrl}>{truncate(group.forumUrl, 15)}</a>
-//                     <br/>kotisivut: <a href={group.homepageUrl}>{truncate(group.homepageUrl,15)}</a>
-//                 </Card.Content>
-
-//                 <Card.Content extra>
-//                     {group.location.streetAddress}
-//                     <br/>lat: {group.location.position.lat}, lng: {group.location.position.lng}
-//                 </Card.Content>
-
-//                 <Button onClick={this.onToggle.bind(this)}>{this.props.selected ? 'X' : '-'}</Button>
-
-//             </Card>
-//         );
-//     }
-// }
-
-// GroupCard.propTypes = {
-//     group: React.PropTypes.object.isRequired,
-//     onSelectionToggle: React.PropTypes.func.isRequired,
-//     selected: React.PropTypes.bool
-// };
-
-// class GroupCards extends React.Component {
-
-//     constructor(props) {
-//         super(props);
-//     }
-
-//     renderGroup(group) {
-//         return (
-//                 <GroupCard key={group.id} group={group} selected={this.props.selections[group.id]} onSelectionToggle={this.props.onSelectionToggle.bind(this)}/>
-//         );
-//     }
-
-//     render() {
-//         const groups = this.props.groups.map((group) => { return this.renderGroup(group); });
-//         return (
-//             <Card.Group>
-//                 {groups}
-//             </Card.Group>
-//         );
-//     }
-// }
-
-// GroupCards.propTypes = {
-//     groups: React.PropTypes.array.isRequired,
-//     onSelectionToggle: React.PropTypes.func.isRequired,
-//     selections: React.PropTypes.array.isRequired
-// };
-
-
 function truncate(s, n) {
     if (s) {
         return (s.length > n) ? s.substr(0, n-1)+'...' : s;
@@ -363,10 +221,26 @@ class GroupItem extends React.Component {
     render() {
         const group = this.props.group;
 
+        let links = [(group.forumUrl ? <a key='forumUrl' target='_blank' href={group.forumUrl}>keskustelufoorumi</a> : null)];
+        if (group.homepageUrl) {
+            links.push(links[0] ? <br key='br1' /> : null);
+            links.push(<a key='homepageUrl' target='_blank' href={group.homepageUrl}>kotisivu</a>);
+        }
+
         return (
 
             <Item key={group.id}>
-                <Item.Image size='tiny' src={groupIconSVG} />
+                <Item.Image size='tiny'>
+                        <Button basic
+                            onClick={this.onToggle.bind(this)}>
+                            <Image>
+                                <SVGIcon
+                                    color={this.props.selected ? uiColors.red : uiColors.yellow}
+                                    path={groupIconSVGPath}
+                                    size={48}/>
+                            </Image>
+                        </Button>
+                </Item.Image>
 
                 <Item.Content>
                     <Item.Header>
@@ -374,20 +248,40 @@ class GroupItem extends React.Component {
                     </Item.Header>
 
                     <Item.Meta>
-                        {group.location.name + ', ' + group.location.district + ', ' + group.location.city}
+                        <Button
+                            floated='right'
+                            size='small'
+                            color={this.props.selected ? 'red' : 'yellow'}
+                            onClick={this.onToggle.bind(this)}
+                            icon='zoom'>
+                        </Button>
+                        {group.location.name}
+                        <br/>{group.location.district + ', ' + group.location.city}
                         <br/>{group.time}
                     </Item.Meta>
 
+                    {/*}
+                    <Item.Extra>
+                        <Button
+                            size='small'
+                            color={this.props.selected ? 'red' : 'yellow'}
+                            onClick={this.onToggle.bind(this)}
+                            icon='zoom'
+                            label={group.location.name}
+                            labelPosition='left'>
+                        </Button>
+                    </Item.Extra>
+                    */}
+
                     <Item.Description>
-                        foorumi: <a href={group.forumUrl}>{truncate(group.forumUrl, 25)}</a>
-                        <br/>kotisivu: <a href={group.homepageUrl}>{truncate(group.homepageUrl, 25)}</a>
+                        {links}
                     </Item.Description>
 
                     <Item.Extra>
-                        <Button floated='right' onClick={this.onToggle.bind(this)}>{this.props.selected ? 'X' : '-'}</Button>
-
-                        {group.location.streetAddress}
+                        {group.location.streetAddress}, {group.location.city}
+                        {/*}
                         <br/>lat: {group.location.position.lat}, lng: {group.location.position.lng}
+                        */}
                     </Item.Extra>
 
                 </Item.Content>
@@ -418,7 +312,7 @@ class GroupItems extends React.Component {
     render() {
         const groups = this.props.groups.map((group) => { return this.renderGroup(group); });
         return (
-            <Item.Group>
+            <Item.Group relaxed>
                 {groups}
             </Item.Group>
         );
@@ -568,7 +462,7 @@ class GroupMap extends React.Component {
         const groupMarkers =
             this.props.groups.map((group) =>
                 {
-                    const fillColor = this.props.selections[group.id] ? 'red' : 'yellow';
+                    const fillColor = this.props.selections[group.id] ? uiColors.red : uiColors.yellow;
                     const icon =
                     {
                         path: groupIconSVGPath,
