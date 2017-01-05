@@ -18,13 +18,29 @@ class RegularGroupApp extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { selections: [], menuIsOpen: false, mapCenter: config.startingPosition};
+        this.state = {
+            selections: [],
+            menuIsOpen: false,
+            menuActiveItem: 'groups',
+            mapCenter: config.startingPosition,
+        };
     }
 
     onGroupSelectionToggle(id, selected) {
         // Clear all previous selections
         var selections = [];
         selections[id] = selected;
+
+        if (selected) {
+            const isGroup = data.regularGroups.find((g) => { return g.id == id });
+            const isEvent = data.events.find((e) => { return e.id == id });
+
+            if (isGroup) {
+                this.handleMenuItemClick('groups');
+            } else if (isEvent) {
+                this.handleMenuItemClick('events');
+            }
+        }
 
         this.setState({
             selections: selections
@@ -35,8 +51,15 @@ class RegularGroupApp extends React.Component {
         this.onGroupSelectionToggle(id, selected);
 
         if (selected) {
+            const group = data.regularGroups.find((g) => { return g.id == id });
+            const event = data.events.find((e) => { return e.id == id });
+
             this.setState({
-                mapCenter: data.regularGroups.find((g) => { return g.id==id;}).location.position
+                mapCenter: group ?
+                    group.location.position
+                : event ?
+                    event.location.position
+                : config.startingPosition
             })
         }
     }
@@ -45,6 +68,10 @@ class RegularGroupApp extends React.Component {
         this.setState({ menuIsOpen: !this.state.menuIsOpen });
         // Restyle the map.
         this.groupMap.restyleMap();
+    }
+
+    handleMenuItemClick(item) {
+        this.setState({ menuActiveItem: item});
     }
 
     handleGroupDetailsRequested(id)
@@ -81,8 +108,10 @@ class RegularGroupApp extends React.Component {
                 <SideBar
                     groups={data.regularGroups}
                     events={data.events}
+                    activeItem={this.state.menuActiveItem}
                     selections={this.state.selections}
                     onSelectionToggle={this.onGroupSelectionToggleWithCenterMap.bind(this)}
+                    onMenuItemClick={this.handleMenuItemClick.bind(this)}
                     onClose={this.handleMenuClick.bind(this)}
                 />
             </Grid.Column>)

@@ -44,8 +44,6 @@ class SideBar extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.state = { activeItem: 'groups' };
     }
 
     handleItemClick(e, item) {
@@ -55,13 +53,13 @@ class SideBar extends React.Component {
         }
         else
         {
-            this.setState({activeItem: item.name});
+            this.props.onMenuItemClick(item.name);
         }
     }
 
     render() {
 
-        const activeItem = this.state.activeItem;
+        const activeItem = this.props.activeItem;
 
         const sideBarMenuItems = [
             <SideBarMenuItem
@@ -137,6 +135,8 @@ SideBar.propTypes = {
     groups: React.PropTypes.array.isRequired,
     events: React.PropTypes.array.isRequired,
     onSelectionToggle: React.PropTypes.func.isRequired,
+    activeItem: React.PropTypes.string.isRequired,
+    onMenuItemClick: React.PropTypes.func.isRequired,
     selections: React.PropTypes.array.isRequired,
     onClose: React.PropTypes.func.isRequired
 };
