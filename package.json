@@ -31,6 +31,7 @@
     "express": "^4.14.0",
     "google-maps-react": "https://github.com/AleksiAhtiainen/google-maps-react/tarball/master",
     "lodash": "^4.17.3",
+    "material-design-icons": "^3.0.1",
     "react": "^15.4.1",
     "react-addons-update": "^15.4.1",
     "react-dom": "^15.4.1",
