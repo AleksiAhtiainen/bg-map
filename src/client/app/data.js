@@ -55,6 +55,36 @@ const data = {
             },
             time: 'torstai, 16:00',
             forumUrl: 'http://www.lautapeliseura.fi/foorumi/viewforum.php?f=13'
+        },
+        {
+            id: uuid.v4(),
+            name: 'Kärmes',
+            location: {
+                name: 'Lukema',
+                streetAddress: 'Yliopistonranta 3',
+                district: 'Itä-Suomen yliopisto',
+                city: 'Kuopio',
+                position: {lat: 62.893694, lng: 27.639278}
+            },
+            time: 'aika vaihtelee',
+            forumUrl: 'http://www.lautapeliseura.fi/foorumi/viewforum.php?f=17',
+            homepageUrl: 'https://www.facebook.com/karmeskuopio/?fref=ts'
+        }
+    ],
+    events: [
+        {
+            id: uuid.v4(),
+            name: 'Kinkkucon 2017',
+            location: {
+                name: 'Lukema',
+                streetAddress: 'Yliopistonranta 3',
+                city: 'Kuopio',
+                position: {lat: 62.893694, lng: 27.639278}
+            },
+            time: '5.1. 17:00 - 8.1. 14:00',
+            forumUrl: 'http://www.lautapeliseura.fi/foorumi/viewtopic.php?f=2&t=16597',
+            vimpeliUrl: 'http://anybo.dy.fi/vimpeli/show_event.php?evid=75',
+            homepageUrl: 'https://www.facebook.com/events/1116400425104201/'
         }
     ]
 };

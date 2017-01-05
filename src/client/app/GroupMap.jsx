@@ -183,8 +183,39 @@ class GroupMap extends React.Component {
                         );
                 });
 
+        const eventMarkers =
+            this.props.events.map((event) =>
+                {
+                    const fillColor = this.props.selections[event.id] ? uiColors.red : uiColors.yellow;
+                    const icon =
+                    {
+                        path: icons.event.path,
+                        fillColor: fillColor,
+                        fillOpacity: 1.0,
+                        scale: 1,
+                        strokeColor: 'black',
+                        strokeWeight: 2,
+                        anchor: new google.maps.Point(24,24)
+                    };
+                    return (
+                        <Marker
+                            key={event.id}
+                            id={event.id}
+                            name={event.location.name}
+                            position={event.location.position}
+                            onMouseover={this.mouseoverMarker.bind(this)}
+                            onClick={this.clickMarker.bind(this)}
+                            icon={icon}
+                            />
+                        );
+                });
+
+
         const activeMarkerGroup =
             this.props.groups.find((group) => { return group.id== this.state.activeMarkerId});
+
+        const activeMarkerEvent =
+            this.props.events.find((event) => { return event.id== this.state.activeMarkerId});
 
         const linkContent = this.props.sideBarDetailLinksVisible ?
           <Card.Content extra>
@@ -203,18 +234,27 @@ class GroupMap extends React.Component {
                     inverted
                 />
             </InfoWindowDetailsButton>
-          </Card.Content>
-;
+          </Card.Content>;
 
-        const infoWindowContent = activeMarkerGroup ?
-            <Card>
-              <Card.Content>
-                <Card.Header>{activeMarkerGroup.name}</Card.Header>
-                <Card.Meta>{activeMarkerGroup.location.name}</Card.Meta>
-                <Card.Description>{activeMarkerGroup.time}</Card.Description>
-              </Card.Content>
-              {linkContent}
-            </Card>
+        const infoWindowContent =
+            activeMarkerGroup ?
+                <Card>
+                  <Card.Content>
+                    <Card.Header>{activeMarkerGroup.name}</Card.Header>
+                    <Card.Meta>{activeMarkerGroup.location.name}</Card.Meta>
+                    <Card.Description>{activeMarkerGroup.time}</Card.Description>
+                  </Card.Content>
+                  {linkContent}
+                </Card>
+            : activeMarkerEvent ?
+                <Card>
+                  <Card.Content>
+                    <Card.Header>{activeMarkerEvent.name}</Card.Header>
+                    <Card.Meta>{activeMarkerEvent.location.name}</Card.Meta>
+                    <Card.Description>{activeMarkerEvent.time}</Card.Description>
+                  </Card.Content>
+                  {linkContent}
+                </Card>
             : <div>'N/A'</div>;
 
         // TODO: Really ugly way to handle  buttons in the non-DOM-rendered InfoWindow,
@@ -236,7 +276,12 @@ class GroupMap extends React.Component {
                 onOpen={this.infoWindowHasOpened.bind(this)}
                 onClose={this.infoWindowHasClosed.bind(this)}
 
-                onButtonClicksRawJS={activeMarkerGroup ? 'handleDetailsClicked(\''+activeMarkerGroup.id+'\')' : null}>
+                onButtonClicksRawJS={
+                    activeMarkerGroup ?
+                        'handleDetailsClicked(\''+activeMarkerGroup.id+'\')'
+                    : activeMarkerEvent ?
+                        'handleDetailsClicked(\''+activeMarkerEvent.id+'\')'
+                    : null}>
 
                 {infoWindowContent}
 
@@ -261,6 +306,7 @@ class GroupMap extends React.Component {
                 }}
                 >
                 {groupMarkers}
+                {eventMarkers}
                 {infoWindow}
 
             </Map>
@@ -270,6 +316,7 @@ class GroupMap extends React.Component {
 
 GroupMap.propTypes = {
     groups: React.PropTypes.array.isRequired,
+    events: React.PropTypes.array.isRequired,
     onSelectionToggle: React.PropTypes.func.isRequired,
     selections: React.PropTypes.array.isRequired,
     mapCenter: React.PropTypes.object.isRequired,

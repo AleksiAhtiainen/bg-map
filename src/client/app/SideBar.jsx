@@ -8,6 +8,7 @@ import config from './config.js';
 
 import SVGIcon from './SVGIcon.jsx';
 import GroupItems from './GroupItems.jsx';
+import EventItems from './EventItems.jsx';
 
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 import Menu from 'semantic-ui-react/dist/commonjs/collections/Menu';
@@ -71,6 +72,13 @@ class SideBar extends React.Component {
                 active={activeItem == 'groups'}
                 onClick={this.handleItemClick.bind(this)} />,
             <SideBarMenuItem
+                path={icons.eventSmall.path}
+                key={'events'}
+                name={'events'}
+                title={'tapahtumat'}
+                active={activeItem == 'events'}
+                onClick={this.handleItemClick.bind(this)} />,
+            <SideBarMenuItem
                 path={icons.socialPersonSmall.path}
                 key={'gamers'}
                 name={'gamers'}
@@ -92,7 +100,13 @@ class SideBar extends React.Component {
                 selections={this.props.selections}
                 onSelectionToggle={this.props.onSelectionToggle}
             />
-            : <span>todo</span>
+            : activeItem == 'events' ?
+            <EventItems
+                events={this.props.events}
+                selections={this.props.selections}
+                onSelectionToggle={this.props.onSelectionToggle}
+            />
+            : <span>todo</span>;
 
         return (
             <Container>
@@ -120,9 +134,10 @@ class SideBar extends React.Component {
 }
 
 SideBar.propTypes = {
-    groups: React.PropTypes.array.isRequired,  // -> GroupTable
-    onSelectionToggle: React.PropTypes.func.isRequired,  // -> GroupTable
-    selections: React.PropTypes.array.isRequired,  // -> GroupTable
+    groups: React.PropTypes.array.isRequired,
+    events: React.PropTypes.array.isRequired,
+    onSelectionToggle: React.PropTypes.func.isRequired,
+    selections: React.PropTypes.array.isRequired,
     onClose: React.PropTypes.func.isRequired
 };
 

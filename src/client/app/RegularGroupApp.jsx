@@ -80,6 +80,7 @@ class RegularGroupApp extends React.Component {
             (<Grid.Column mobile={16} tablet={8} computer={8}>
                 <SideBar
                     groups={data.regularGroups}
+                    events={data.events}
                     selections={this.state.selections}
                     onSelectionToggle={this.onGroupSelectionToggleWithCenterMap.bind(this)}
                     onClose={this.handleMenuClick.bind(this)}
@@ -111,6 +112,7 @@ class RegularGroupApp extends React.Component {
                             ref={(m) => { this.groupMap = m; }}
                             mapCenter={this.state.mapCenter}
                             groups={data.regularGroups}
+                            events={data.events}
                             selections={this.state.selections}
                             onSelectionToggle={this.onGroupSelectionToggle.bind(this)}
                             sideBarDetailLinksVisible={!this.state.menuIsOpen}

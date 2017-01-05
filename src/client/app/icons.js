@@ -6,6 +6,13 @@ const icons = {
     groupSmall: {
         path: require('svg-path-loader!material-design-icons/social/svg/production/ic_group_24px.svg')
     },
+    event: {
+        path: require('svg-path-loader!material-design-icons/image/svg/production/ic_flash_on_48px.svg'),
+        file: '/material-design-icons/image/svg/production/ic_flash_on_48px.svg'
+    },
+    eventSmall: {
+        path: require('svg-path-loader!material-design-icons/image/svg/production/ic_flash_on_24px.svg')
+    },
     navigationCloseSmall: {
         path: require('svg-path-loader!material-design-icons/navigation/svg/production/ic_close_24px.svg')
     },
