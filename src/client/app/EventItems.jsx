@@ -35,6 +35,24 @@ class EventItem extends React.Component {
             links.push(<br key='br2' />);
             links.push(<a key='vimpeliUrl' target='_blank' href={event.vimpeliUrl}>vimpeli</a>);
         }
+        if (event.facebookUrl) {
+            links.push(<br key='br3' />);
+            links.push(
+                <a key='facebookUrl' target='_blank' href={event.facebookUrl}>
+                    <Icon name='facebook'/>facebook
+                </a>
+            );
+        }
+        if (event.twitterUrl) {
+            links.push(<br key='br4' />);
+            links.push(
+                <a key='twitterUrl' target='_blank' href={event.twitterUrl}>
+                    <Icon name='twitter'/>twitter
+                </a>
+            );
+        }
+
+
 
         return (
 
