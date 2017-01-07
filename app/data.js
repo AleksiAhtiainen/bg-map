@@ -84,8 +84,27 @@ const data = {
             time: '5.1. 17:00 - 8.1. 14:00',
             forumUrl: 'http://www.lautapeliseura.fi/foorumi/viewtopic.php?f=2&t=16597',
             vimpeliUrl: 'http://anybo.dy.fi/vimpeli/show_event.php?evid=75',
-            homepageUrl: 'https://www.facebook.com/events/1116400425104201/'
+            homepageUrl: null,
+            facebookUrl: 'https://www.facebook.com/events/1116400425104201/',
+            twitterUrl: null
+        },
+        {
+            id: uuid.v4(),
+            name: 'Tracon Hitpoint 2017',
+            location: {
+                name: 'Tampere-talo',
+                streetAddress: 'Yliopistonkatu 55',
+                city: 'Tampere',
+                position: {lat: 61.495850, lng: 23.781716}
+            },
+            time: '4.3. 10:00 - 5.3. 18:00',
+            forumUrl: null,
+            vimpeliUrl: null,
+            homepageUrl: 'https://2017.hitpoint.tracon.fi/fi',
+            facebookUrl: 'https://www.facebook.com/events/1789359844654527/',
+            twitterUrl: 'https://twitter.com/Tracon_FI'
         }
+
     ]
 };
 
