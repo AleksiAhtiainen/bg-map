@@ -30,6 +30,22 @@ class GroupItem extends React.Component {
             links.push(links[0] ? <br key='br1' /> : null);
             links.push(<a key='homepageUrl' target='_blank' href={group.homepageUrl}>kotisivu</a>);
         }
+        if (group.facebookUrl) {
+            links.push(links[0] ? <br key='br2' /> : null);
+            links.push(
+                <a key='facebookUrl' target='_blank' href={group.facebookUrl}>
+                    <Icon name='facebook'/>facebook
+                </a>
+            );
+        }
+        if (group.twitterUrl) {
+            links.push(links[0] ? <br key='br3' /> : null);
+            links.push(
+                <a key='twitterUrl' target='_blank' href={group.twitterUrl}>
+                    <Icon name='twitter'/>twitter
+                </a>
+            );
+        }
 
         return (
 
