@@ -68,7 +68,7 @@ const data = {
             },
             time: 'aika vaihtelee',
             forumUrl: 'http://www.lautapeliseura.fi/foorumi/viewforum.php?f=17',
-            homepageUrl: 'https://www.facebook.com/karmeskuopio/?fref=ts'
+            facebookUrl: 'https://www.facebook.com/karmeskuopio/?fref=ts'
         }
     ],
     events: [
