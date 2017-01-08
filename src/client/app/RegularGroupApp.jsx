@@ -43,12 +43,10 @@ class RegularGroupApp extends React.Component {
         // the static demo data.
         timeoutPromise(3000, new Error('Timed Out!'),
             fetch('http://localhost:3000/api/regular-groups'))
-
             .then(result => {
                 // TODO: Handle erroneous result codes
                 return result.json();
             }).then(newRegularGroupsJson => {
-
                 const newState = update(this.state, {
                     data: {
                         regularGroups: { $set: newRegularGroupsJson }
@@ -58,13 +56,42 @@ class RegularGroupApp extends React.Component {
             }).catch(ex => {
                 console.log('Retrieving data from server failed:', ex);
                 console.log('=> revert to static demo data:', ex);
+
                 const newState = update(this.state, {
                     data: {
                         regularGroups: { $set: data.regularGroups }
                     }
                 });
+
                 this.setState(newState);
             });
+
+        timeoutPromise(3000, new Error('Timed Out!'),
+            fetch('http://localhost:3000/api/events'))
+            .then(result => {
+                // TODO: Handle erroneous result codes
+                return result.json();
+            }).then(newEventsJson => {
+                const newState = update(this.state, {
+                    data: {
+                        events: { $set: newEventsJson }
+                    }
+                });
+
+                this.setState(newState);
+            }).catch(ex => {
+                console.log('Retrieving data from server failed:', ex);
+                console.log('=> revert to static demo data:', ex);
+
+                const newState = update(this.state, {
+                    data: {
+                        events: { $set: data.events }
+                    }
+                });
+
+                this.setState(newState);
+            });
+
     }
 
     onGroupSelectionToggle(id, selected) {

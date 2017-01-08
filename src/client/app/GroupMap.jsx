@@ -147,8 +147,6 @@ class GroupMap extends React.Component {
         this.setState(newState);
     }
 
-
-
     render() {
         const containerStyle = {
             position: 'relative',
@@ -159,7 +157,8 @@ class GroupMap extends React.Component {
         const groupMarkers =
             this.props.groups.map((group) =>
                 {
-                    const fillColor = this.props.selections[group.id] ? uiColors.red : uiColors.yellow;
+                    const isSelected = this.props.selections[group.id];
+                    const fillColor = isSelected ? uiColors.red : uiColors.yellow;
                     const icon =
                     {
                         path: icons.group.path,
@@ -170,23 +169,28 @@ class GroupMap extends React.Component {
                         strokeWeight: 2,
                         anchor: new google.maps.Point(24,24)
                     };
+
+                    const props = {
+                        key: group.id,
+                        id: group.id,
+                        name: group.location.name,
+                        position: group.location.position,
+                        onMouseover: this.mouseoverMarker.bind(this),
+                        onClick: this.clickMarker.bind(this),
+                        icon: icon,
+                        ...(isSelected && {zIndex: 998} )
+                    };
+
                     return (
-                        <Marker
-                            key={group.id}
-                            id={group.id}
-                            name={group.location.name}
-                            position={group.location.position}
-                            onMouseover={this.mouseoverMarker.bind(this)}
-                            onClick={this.clickMarker.bind(this)}
-                            icon={icon}
-                            />
-                        );
+                        <Marker {...props}/>
+                    );
                 });
 
         const eventMarkers =
             this.props.events.map((event) =>
                 {
-                    const fillColor = this.props.selections[event.id] ? uiColors.red : uiColors.yellow;
+                    const isSelected = this.props.selections[event.id];
+                    const fillColor = isSelected ? uiColors.red : uiColors.yellow;
                     const icon =
                     {
                         path: icons.event.path,
@@ -197,17 +201,21 @@ class GroupMap extends React.Component {
                         strokeWeight: 2,
                         anchor: new google.maps.Point(24,48)
                     };
+
+                    const props = {
+                            key: event.id,
+                            id: event.id,
+                            name: event.location.name,
+                            position: event.location.position,
+                            onMouseover: this.mouseoverMarker.bind(this),
+                            onClick: this.clickMarker.bind(this),
+                            icon: icon,
+                            ...(isSelected && {zIndex: 999} )
+                    };
+
                     return (
-                        <Marker
-                            key={event.id}
-                            id={event.id}
-                            name={event.location.name}
-                            position={event.location.position}
-                            onMouseover={this.mouseoverMarker.bind(this)}
-                            onClick={this.clickMarker.bind(this)}
-                            icon={icon}
-                            />
-                        );
+                        <Marker {...props}/>
+                    );
                 });
 
 

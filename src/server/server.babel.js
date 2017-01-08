@@ -25,5 +25,14 @@ MongoClient.connect(mongoUrl, (err, db) => {
         });
     });
 
+    app.get('/api/events', (req, res) => {
+        db.collection('events').find().toArray((err, result) => {
+            if (err) return console.log(err);
+
+            res.json(result);
+        });
+    });
+
+
     app.listen(process.env.PORT || 3000);
 });
