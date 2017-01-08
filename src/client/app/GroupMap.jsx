@@ -195,7 +195,7 @@ class GroupMap extends React.Component {
                         scale: 1,
                         strokeColor: 'black',
                         strokeWeight: 2,
-                        anchor: new google.maps.Point(24,24)
+                        anchor: new google.maps.Point(24,48)
                     };
                     return (
                         <Marker
