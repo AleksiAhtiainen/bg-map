@@ -7,7 +7,9 @@
     "webpack-watch": "webpack -d --watch",
     "express-server": "node ./src/server/server",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently --kill-others \"npm run webpack-watch --verbose\" \"npm run express-server\"",
+    "create-db": "node ./src/scripts/create-db",
+    "mongod": "mongod --dbpath /Users/ahtiainen/ownwork/data",
+    "dev": "concurrently --kill-others \"npm run webpack-watch --verbose\" \"npm run mongod\" \"npm run express-server\"",
     "build": "webpack -p",
     "deploy": "gh-pages -d src/client"
   },
@@ -38,7 +40,8 @@
     "semantic-ui-react": "^0.62.2",
     "svg-url-loader": "^1.1.0",
     "uuid": "^3.0.1",
-    "webpack": "^1.14.0"
+    "webpack": "^1.14.0",
+    "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
     "babel-preset-stage-3": "^6.17.0",

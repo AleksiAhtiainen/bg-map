@@ -1,5 +1,6 @@
 import React from 'react';
 import update from 'react-addons-update';
+import 'whatwg-fetch';
 
 import uiColors from './uiColors.js';
 import icons from './icons.js';
@@ -13,6 +14,13 @@ import SideBar from './SideBar.jsx';
 import Grid from 'semantic-ui-react/dist/commonjs/collections/Grid';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
 
+function timeoutPromise(timeout, err, promise) {
+  return new Promise(function(resolve,reject) {
+    promise.then(resolve,reject);
+    setTimeout(reject.bind(null,err), timeout);
+  });
+}
+
 class RegularGroupApp extends React.Component {
 
     constructor(props) {
@@ -23,7 +31,40 @@ class RegularGroupApp extends React.Component {
             menuIsOpen: false,
             menuActiveItem: 'groups',
             mapCenter: config.startingPosition,
+            data: {
+                regularGroups: [],
+                events: data.events
+            }
         };
+    }
+
+    componentDidMount() {
+        // Wait for 3000 ms for server to respond. If it does not, revert to
+        // the static demo data.
+        timeoutPromise(3000, new Error('Timed Out!'),
+            fetch('http://localhost:3000/api/regular-groups'))
+
+            .then(result => {
+                // TODO: Handle erroneous result codes
+                return result.json();
+            }).then(newRegularGroupsJson => {
+
+                const newState = update(this.state, {
+                    data: {
+                        regularGroups: { $set: newRegularGroupsJson }
+                    }
+                });
+                this.setState(newState);
+            }).catch(ex => {
+                console.log('Retrieving data from server failed:', ex);
+                console.log('=> revert to static demo data:', ex);
+                const newState = update(this.state, {
+                    data: {
+                        regularGroups: { $set: data.regularGroups }
+                    }
+                });
+                this.setState(newState);
+            });
     }
 
     onGroupSelectionToggle(id, selected) {
@@ -32,8 +73,8 @@ class RegularGroupApp extends React.Component {
         selections[id] = selected;
 
         if (selected) {
-            const isGroup = data.regularGroups.find((g) => { return g.id == id });
-            const isEvent = data.events.find((e) => { return e.id == id });
+            const isGroup = this.state.data.regularGroups.find((g) => { return g.id == id });
+            const isEvent = this.state.data.events.find((e) => { return e.id == id });
 
             if (isGroup) {
                 this.handleMenuItemClick('groups');
@@ -51,8 +92,8 @@ class RegularGroupApp extends React.Component {
         this.onGroupSelectionToggle(id, selected);
 
         if (selected) {
-            const group = data.regularGroups.find((g) => { return g.id == id });
-            const event = data.events.find((e) => { return e.id == id });
+            const group = this.state.data.regularGroups.find((g) => { return g.id == id });
+            const event = this.state.data.events.find((e) => { return e.id == id });
 
             this.setState({
                 mapCenter: group ?
@@ -106,8 +147,8 @@ class RegularGroupApp extends React.Component {
         const menuColumn = this.state.menuIsOpen ?
             (<Grid.Column mobile={16} tablet={8} computer={8}>
                 <SideBar
-                    groups={data.regularGroups}
-                    events={data.events}
+                    groups={this.state.data.regularGroups}
+                    events={this.state.data.events}
                     activeItem={this.state.menuActiveItem}
                     selections={this.state.selections}
                     onSelectionToggle={this.onGroupSelectionToggleWithCenterMap.bind(this)}
@@ -140,8 +181,8 @@ class RegularGroupApp extends React.Component {
                         <GroupMap
                             ref={(m) => { this.groupMap = m; }}
                             mapCenter={this.state.mapCenter}
-                            groups={data.regularGroups}
-                            events={data.events}
+                            groups={this.state.data.regularGroups}
+                            events={this.state.data.events}
                             selections={this.state.selections}
                             onSelectionToggle={this.onGroupSelectionToggle.bind(this)}
                             sideBarDetailLinksVisible={!this.state.menuIsOpen}
